@@ -29,5 +29,10 @@
   },
   "@parcel/resolver-default": {
     "packageExports": true
+  },
+  "alias": {
+    "process": {
+        "global": "{}"
+    }
   }
 }
