@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Text, useToast } from '@chakra-ui/react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi';
-import { DgenTokenAddress, DidKeyRegistryAddress } from '@/contracts';
+import { DgenTokenAddress, DidKeyRegistryAddress } from '../contracts';
 import { erc20Abi } from 'viem';
 
 interface AllowanceButtonProps {

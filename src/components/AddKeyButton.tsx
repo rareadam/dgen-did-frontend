@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, useToast, Spinner, Box, Flex } from '@chakra-ui/react';
 import { useAccount, useWaitForTransactionReceipt, useWriteContract, useReadContract } from 'wagmi';
-import { DidKeyRegistryAbi, DidKeyRegistryAddress, DgenTokenAddress } from '@/contracts';
+import { DidKeyRegistryAbi, DidKeyRegistryAddress, DgenTokenAddress } from '../contracts';
 import { erc20Abi } from 'viem';
 import AllowanceButton from './AllowanceButton';
 import KeySelect from './KeySelect';

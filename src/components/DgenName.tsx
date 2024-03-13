@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Card, Flex, Heading, Text } from '@chakra-ui/react';
 import { useReadContract } from 'wagmi';
-import { DidNameRegistryAbi, DidNameRegistryAddress } from '@/contracts';
+import { DidNameRegistryAbi, DidNameRegistryAddress } from '../contracts';
 import RegisterDgenNameButton from './RegisterDgenNameButton';
 import AllowanceButton from './AllowanceButton';
 import UnregisterDgenNameButton from './UnregisterDgenNameButton';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Input, useToast } from '@chakra-ui/react';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
-import { DidNameRegistryAbi, DidNameRegistryAddress } from '@/contracts';
+import { DidNameRegistryAbi, DidNameRegistryAddress } from '../contracts';
 
 interface RegisterDgenNameButtonProps {
     did: string;

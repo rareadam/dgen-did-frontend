@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, useToast } from '@chakra-ui/react';
 import { useAccount, useWriteContract } from 'wagmi';
 import { erc20Abi } from 'viem';
-import { DgenTokenAddress } from '@/contracts';
+import { DgenTokenAddress } from '../contracts';
 
 
 const SendDgenToken = () => {

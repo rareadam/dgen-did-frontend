@@ -13,7 +13,7 @@ import {
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 import { erc20Abi, keccak256 } from 'viem';
 
-import { DidKeyRegistryAbi, DidKeyRegistryAddress, DgenTokenAddress } from '@/contracts';
+import { DidKeyRegistryAbi, DidKeyRegistryAddress, DgenTokenAddress } from '../contracts';
 import AllowanceButton from './AllowanceButton';
 
 

@@ -1,4 +1,4 @@
-import { DidNameRegistryAbi, DidNameRegistryAddress } from '@/contracts';
+import { DidNameRegistryAbi, DidNameRegistryAddress } from '../contracts';
 import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';

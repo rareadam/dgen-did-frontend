@@ -1,4 +1,4 @@
-import { DidKeyRegistryAddress, DidKeyRegistryAbi } from "@/contracts";
+import { DidKeyRegistryAddress, DidKeyRegistryAbi } from "../contracts";
 import { Text, Card, Heading, List, ListItem, Stat, StatLabel, StatNumber, Box } from "@chakra-ui/react";
 import { useReadContract } from "wagmi";
 import AddKeyButton from "./AddKeyButton";

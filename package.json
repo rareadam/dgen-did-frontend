@@ -1,7 +1,6 @@
 {
   "name": "fresh-frontend",
   "version": "1.0.0",
-  "main": "index.js",
   "source": "src/index.html",
   "scripts": {
     "start": "parcel",

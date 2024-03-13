@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Card, Heading, List, ListItem, Stat, StatHelpText, StatLabel, StatNumber, Text } from '@chakra-ui/react';
 import { useReadContract } from 'wagmi';
-import { DidServiceAccountRegistryAbi, DidServiceAccountRegistryAddress } from '@/contracts';
+import { DidServiceAccountRegistryAbi, DidServiceAccountRegistryAddress } from '../contracts';
 import AddServiceAccountButton from './AddServiceAccountButton';
 import AllowanceButton from './AllowanceButton';
 import RemoveServiceAccountButton from './RemoveServiceAccountButton';

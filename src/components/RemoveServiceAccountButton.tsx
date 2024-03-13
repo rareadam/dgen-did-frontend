@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, Button, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, useDisclosure } from '@chakra-ui/react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { DidKeyRegistryAbi, DidKeyRegistryAddress, DidServiceAccountRegistryAbi, DidServiceAccountRegistryAddress } from '@/contracts';
+import { DidKeyRegistryAbi, DidKeyRegistryAddress, DidServiceAccountRegistryAbi, DidServiceAccountRegistryAddress } from '../contracts';
 
 interface RemoveServiceAccountButtonProps {
     did: string;

@@ -1,4 +1,4 @@
-import { DgenTokenAddress } from "@/contracts";
+import { DgenTokenAddress } from "../contracts";
 import { Card, Heading, Flex, Select, Text } from "@chakra-ui/react";
 import { erc20Abi } from "viem";
 import { useAccount, useSwitchChain, useBlockNumber, useBalance, useReadContract } from "wagmi";
