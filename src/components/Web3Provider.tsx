@@ -8,13 +8,13 @@ import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 const config = createConfig(
   getDefaultConfig({
     // Your dApps chains
-    chains: [/*mainnet,*/ hardhat, baseSepolia, zkSync],
+    chains: [/*mainnet,*/ baseSepolia, hardhat, zkSync],
     transports: {
       // RPC URL for each chain
       // [mainnet.id]: http(),
+      [baseSepolia.id]: http(),
       [hardhat.id]: http(),
       [zkSync.id]: http(),
-      [baseSepolia.id]: http(),
     },
 
     // Required API Keys

@@ -56,7 +56,17 @@ export function App() {
 function Main() {
   const { address, isConnected } = useAccount();
 
-  const [did, setDid] = useState<string>(`did:dgen:zksync:${address}`);
+  let defaultDid = `did:dgen:zksync:${address}`
+  if (!isConnected) {
+    defaultDid = ""
+  }
+  const queryParams = new URLSearchParams(window.location.search);
+  const queryDid = queryParams.get('q');
+  if (queryDid) {
+    defaultDid = queryDid;
+  }
+
+  const [did, setDid] = useState<string>(defaultDid);
 
   // when initially connecting the app or switching accounts, update the current did
   useEffect(() => {
