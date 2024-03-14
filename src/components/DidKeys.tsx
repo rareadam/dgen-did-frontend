@@ -16,27 +16,29 @@ const DidKeys: React.FC<DidKeyProps> = ({ did, hasWriteAccess }) => {
     // check if didAddress is a valid eth address
     const isEthAddress = didAddress.match(/^0x[0-9a-fA-F]{40}$/);
 
-    if (!isEthAddress) {
-        return (
-            <Card p="6" m="6" boxShadow="lg">
-                <Heading mb="4" fontSize="2xl">DID Keys of {did}</Heading>
-                <Text color="red.500">Invalid DID</Text>
-            </Card>
-        )
-    }
+    // if (!isEthAddress) {
+    //     return (
+    //         <Card p="6" m="6" boxShadow="lg">
+    //             <Heading mb="4" fontSize="2xl">DID Keys of {did}</Heading>
+    //             <Text color="red.500">Invalid DID</Text>
+    //         </Card>
+    //     )
+    // }
 
-    const { data: didKeys, isLoading: isLoadingDidKeys, isError: didKeysError, refetch } = useReadContract({
+    const { data: didKeys, isLoading: isLoadingDidKeys, isError, error, refetch } = useReadContract({
         address: DidKeyRegistryAddress,
         abi: DidKeyRegistryAbi,
         functionName: 'getKeys',
         args: [didAddress as `0x${string}`],
     });
 
-    if (isLoadingDidKeys) return <Text>Loading keys...</Text>;
+    // if (isLoadingDidKeys) return <Text>Loading keys...</Text>;
 
     return (
         <Card p="6" m="6" boxShadow="lg">
-            <Heading mb="4" fontSize="2xl">DID Keys of {did}</Heading>
+            <Heading mb="4" fontSize="2xl">DID Keys</Heading>
+            {isError && error && <Text>Error fetching keys: {error.message}</Text>}
+            {isLoadingDidKeys && <Text>Loading keys...</Text>}
             {didKeys && didKeys.length > 0 ? (
                 <>
                     <VStack spacing={4}>
@@ -66,7 +68,7 @@ const DidKeys: React.FC<DidKeyProps> = ({ did, hasWriteAccess }) => {
                     {hasWriteAccess && <AddKeyButton did={did} onAddKey={refetch} />}
                 </>
             ) : (
-                <Text>No keys found for this DID.</Text>
+                <Text color="gray.500">No keys found for this DID.</Text>
             )
             }
         </Card >

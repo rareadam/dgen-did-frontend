@@ -29,7 +29,7 @@ const DgenName: React.FC<DgenNameProps> = ({ did, hasWriteAccess }) => {
             <Heading mb="4" fontSize="2xl">Dgen Name</Heading>
             {isLoading && <Text>Loading name...</Text>}
             {isError && <Text>Failed to load name ({error?.message}).</Text>}
-            {name ? <Heading as="h3" size="lg" textAlign={"center"}>{name}</Heading> : <Text color="gray.500">No name registered for this DID.</Text>}
+            {name ? <Heading as="h3" size="lg" textAlign={"center"} mb={10}>{name}</Heading> : <Text color="gray.500">No name registered for this DID.</Text>}
             <Flex justifyContent="flex-end">
                 {name && hasWriteAccess && <UnregisterDgenNameButton did={did} onUnregister={refetch} name={name} />}
                 {!name && hasWriteAccess && <AllowanceButton requiredAllowance={BigInt(100)} spender={DidNameRegistryAddress}>

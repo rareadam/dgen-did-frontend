@@ -19,12 +19,10 @@ interface ServiceAccount {
 
 const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did, hasWriteAccess }) => {
     const [serviceAccounts, setServiceAccounts] = useState<ServiceAccount[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isError, setIsError] = useState(false);
 
     const didAddress = did.replace(/^did:de?gen:.*:/, '') as `0x${string}`;
 
-    const { data, error, refetch } = useReadContract({
+    const { data, isLoading, isError, error, refetch } = useReadContract({
         address: DidServiceAccountRegistryAddress,
         abi: DidServiceAccountRegistryAbi,
         functionName: 'getServiceAccounts',
@@ -36,17 +34,14 @@ const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did, hasWriteAccess }
             console.log(data)
             let serviceAccounts: ServiceAccount[] = data.filter(e => e.id != '').map((e) => e as ServiceAccount);
             setServiceAccounts(serviceAccounts);
-            setIsLoading(false);
-        }
-        if (error) {
-            setIsError(true);
-            setIsLoading(false);
         }
     }, [data, error]);
 
     return (
         <Card p="6" m="6" boxShadow="lg">
             <Heading mb="4" fontSize="2xl">Service Accounts</Heading>
+            { isError && error && <Text>Failed to load service accounts: {error.message}.</Text> }
+            { isLoading && <Text>Loading service accounts...</Text> }
             {serviceAccounts.length > 0 ? (
                 <Table variant="simple">
                     <Thead>
@@ -71,10 +66,9 @@ const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did, hasWriteAccess }
                     </Tbody>
                 </Table>
             ) : (
-                <Text>No service accounts found for this DID.</Text>
+                <Text color="gray.500">No service accounts found for this DID.</Text>
             )}
-            { isError && <Text color="red.500">Failed to load service accounts.</Text> }
-            { isLoading && <Text>Loading service accounts...</Text> }
+            
             { hasWriteAccess && <AddServiceAccountButton did={did} onAddServiceAccount={refetch} key={serviceAccounts.length} />}
         </Card>
     );

@@ -13,7 +13,7 @@ interface LinkedAccountsProps {
 const LinkedAccounts = ({did, hasWriteAccess}: LinkedAccountsProps) => {
   const didAddress = did.replace(/^did:de?gen:.*:/, '');
 
-  const { data: linkedAccounts, isError, refetch } = useReadContract({
+  const { data: linkedAccounts, isError, error, isLoading, refetch } = useReadContract({
     address: DidAccountLinkRegistryAddress,
     // Assuming the ABI is correctly imported and contains a function to get linked accounts
     abi: DidAccountLinkRegistryAbi, // This ABI needs to be defined/imported in your project
@@ -24,6 +24,8 @@ const LinkedAccounts = ({did, hasWriteAccess}: LinkedAccountsProps) => {
   return (
     <Card p="6" m="6" boxShadow="lg">
         <Heading mb="4" fontSize="2xl">Linked Accounts</Heading>
+        {isError && <Text>Error fetching linked accounts: {error?.message}.</Text>}
+        {isLoading && <Text>Loading linked accounts...</Text>}
         {linkedAccounts && linkedAccounts.length > 0 ? (
             <Table variant="simple">
                 <Thead>
@@ -48,7 +50,7 @@ const LinkedAccounts = ({did, hasWriteAccess}: LinkedAccountsProps) => {
                 </Tbody>
             </Table>
         ) : (
-            <Text>No accounts linked.</Text>
+            <Text color="gray.500">No accounts linked.</Text>
         )}
         {hasWriteAccess && <Box mt={4}>
           <Flex justifyContent="flex-end">

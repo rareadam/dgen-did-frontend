@@ -15,6 +15,7 @@ import {
   StatLabel,
   StatNumber,
   Text,
+  VisuallyHiddenInput,
 } from "@chakra-ui/react";
 
 import theme from "./theme";
@@ -22,7 +23,7 @@ import theme from "./theme";
 import { useAccount, useBalance, useBlockNumber, useChainId, useReadContract, useSwitchChain } from "wagmi";
 import NavBar from "./components/NavBar";
 import { Web3Provider } from "./components/Web3Provider";
-import { DidKeyRegistryAbi, DidKeyRegistryAddress, DgenTokenAddress } from "./contracts";
+import { DidKeyRegistryAbi, DidKeyRegistryAddress, DgenTokenAddress, DidNameRegistryAbi, DidNameRegistryAddress, DidAccountLinkRegistryAddress, DidAccountLinkRegistryAbi } from "./contracts";
 import DidRegistering from "./components/DidRegistering";
 import { erc20Abi } from "viem";
 import { useEffect, useState } from "react";
@@ -44,9 +45,9 @@ export function App() {
     <ChakraBaseProvider theme={theme}>
       <Web3Provider>
         <NavBar />
-        <ConnectedOnly>
-          <Main />
-        </ConnectedOnly>
+        {/* <ConnectedOnly> */}
+        <Main />
+        {/* </ConnectedOnly> */}
       </Web3Provider>
     </ChakraBaseProvider>
   );
@@ -63,6 +64,7 @@ function Main() {
   }, [address]);
 
   const [writeAccess, setWriteAccess] = useState<boolean>(false);
+  const [didFound, setDidFound] = useState<boolean>(false);
 
   const didAddress = did.replace(/^did:de?gen:zksync:/, "") as `0x${string}`;
 
@@ -79,12 +81,21 @@ function Main() {
   };
 
   // check if current address is in the list of did keys
-  useEffect(()=>{
-    const hasWriteAccess = didKeys?.find((k) => k.publicKey === address?.toLowerCase() && k.keyUsage === '0xb9208574d39bc6b85a528191d39d983f3a0bc58ef7129343fde819f64f7268cd') !== undefined
-    setWriteAccess(hasWriteAccess)
+  useEffect(() => {
+    if (!didKeys) {
+      setDidFound(false);
+      return;
+    }
+    if (didKeys.length > 0) {
+      const hasWriteAccess = didKeys?.find((k) => k.publicKey === address?.toLowerCase() && k.keyUsage === '0xb9208574d39bc6b85a528191d39d983f3a0bc58ef7129343fde819f64f7268cd') !== undefined
+      setWriteAccess(hasWriteAccess)
+      setDidFound(true);
+    } else {
+      setDidFound(false);
+    }
   }, [didKeys]);
 
-  console.log(`write access: ${writeAccess}`, {didKeys, address});
+  console.log(`write access: ${writeAccess}`, { didKeys, address });
 
   return (
     <Box>
@@ -96,6 +107,12 @@ function Main() {
         alignItems="center"
         h="100%"
       >
+        <Box w="80%" p="4">
+          {didFound && <Heading as="h2" size="xl" textAlign={"center"}>
+            {did}
+          </Heading>}
+          {!didFound && <Text color="gray.500" textAlign={"center"}>No DID found.</Text>}
+        </Box>
         <Box w="80%" p="4">
           <DgenName did={did} hasWriteAccess={writeAccess} />
         </Box>
@@ -109,12 +126,14 @@ function Main() {
           <LinkedAccounts did={did} hasWriteAccess={writeAccess} />
         </Box>
 
-        <Box w="80%" p="4">
-          <DidRegistering />
-        </Box>
-        <Box w="80%" p="4">
-          <ConnectedCard />
-        </Box>
+        <ConnectedOnly>
+          <Box w="80%" p="4">
+            <DidRegistering />
+          </Box>
+          <Box w="80%" p="4">
+            <ConnectedCard />
+          </Box>
+        </ConnectedOnly>
       </Flex>
     </Box>
   )
@@ -140,12 +159,57 @@ interface DidSelectorProps {
 }
 
 function DidSelector({ did, onDidChange }: DidSelectorProps) {
+
+  const [value, setValue] = useState<string>(did);
+
+  const removeDidPrefix = (did: string) => did.replace(/^did:de?gen:zksync:/, "");
+
+  const { data: didByName, refetch: refetchDidByName } = useReadContract({
+    abi: DidNameRegistryAbi,
+    address: DidNameRegistryAddress,
+    functionName: "getDidForName",
+    args: [value],
+  });
+
+  const { data: didByAccount, refetch: refetchDidByAccount } = useReadContract({
+    abi: DidAccountLinkRegistryAbi,
+    address: DidAccountLinkRegistryAddress,
+    functionName: "getDidByLinkedAccount",
+    args: [value as `0x${string}`],
+  });
+
+  const { data: didByLookup, refetch: refetchDidByLookup } = useReadContract({
+    abi: DidKeyRegistryAbi,
+    address: DidKeyRegistryAddress,
+    functionName: "didExists",
+    args: [removeDidPrefix(value) as `0x${string}`],
+  });
+
+  if (didByName) {
+    onDidChange(`did:dgen:zksync:${didByName}`);
+  }
+
+  if (didByAccount) {
+    onDidChange(`did:dgen:zksync:${didByAccount}`);
+  }
+
+  if (didByLookup) {
+    if (value.startsWith("did:")) {
+      onDidChange(value);
+    } else {
+      onDidChange(`did:dgen:zksync:${value}`);
+    }
+  }
+
   return (
     <Flex justifyContent="center" alignItems="center">
       <Box w="80%" p="4">
-        <Heading mb="4" fontSize="large">Select a DID</Heading>
-        <Input value={did} fontSize={"2xl"} onChange={(e) => {
-          onDidChange(e.target.value);
+        <Heading mb="4" fontSize="large">Search by DID, name or linked account</Heading>
+        <Input value={value} fontSize={"2xl"} onChange={(e) => {
+          setValue(e.target.value);
+          refetchDidByName();
+          refetchDidByAccount();
+          refetchDidByLookup();
         }} />
       </Box>
     </Flex>
