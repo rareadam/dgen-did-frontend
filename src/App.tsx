@@ -56,11 +56,35 @@ function Main() {
   const { address, isConnected } = useAccount();
 
   const [did, setDid] = useState<string>(`did:dgen:zksync:${address}`);
+
+  // when initially connecting the app or switching accounts, update the current did
   useEffect(() => {
     setDid(`did:dgen:zksync:${address}`);
   }, [address]);
 
-  const didAddress = did.replace(/^did:de?gen:zksync:/, "");
+  const [writeAccess, setWriteAccess] = useState<boolean>(false);
+
+  const didAddress = did.replace(/^did:de?gen:zksync:/, "") as `0x${string}`;
+
+  const { data: didKeys, refetch: refetchDidKeys } = useReadContract({
+    abi: DidKeyRegistryAbi,
+    address: DidKeyRegistryAddress,
+    functionName: "getKeys",
+    args: [didAddress],
+  });
+
+  const onDidChange = (did: string) => {
+    setDid(did);
+    refetchDidKeys();
+  };
+
+  // check if current address is in the list of did keys
+  useEffect(()=>{
+    const hasWriteAccess = didKeys?.find((k) => k.publicKey === address?.toLowerCase() && k.keyUsage === '0xb9208574d39bc6b85a528191d39d983f3a0bc58ef7129343fde819f64f7268cd') !== undefined
+    setWriteAccess(hasWriteAccess)
+  }, [didKeys]);
+
+  console.log(`write access: ${writeAccess}`, {didKeys, address});
 
   return (
     <Box>
@@ -73,16 +97,16 @@ function Main() {
         h="100%"
       >
         <Box w="80%" p="4">
-          <DgenName did={did} />
+          <DgenName did={did} hasWriteAccess={writeAccess} />
         </Box>
         <Box w="80%" p="4">
-          <DidKeys did={did} />
+          <DidKeys did={did} hasWriteAccess={writeAccess} />
         </Box>
         <Box w="80%" p="4">
-          <ServiceAccounts did={did} />
+          <ServiceAccounts did={did} hasWriteAccess={writeAccess} />
         </Box>
         <Box w="80%" p="4">
-          <LinkedAccounts did={did} />
+          <LinkedAccounts did={did} hasWriteAccess={writeAccess} />
         </Box>
 
         <Box w="80%" p="4">

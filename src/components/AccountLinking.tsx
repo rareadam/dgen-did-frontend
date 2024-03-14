@@ -7,9 +7,10 @@ import RemoveLinkedAccountButton from './RemoveLinkedAccountButton';
 
 interface LinkedAccountsProps {
     did: string;
+    hasWriteAccess?: boolean;
 }
 
-const LinkedAccounts = ({did}: LinkedAccountsProps) => {
+const LinkedAccounts = ({did, hasWriteAccess}: LinkedAccountsProps) => {
   const didAddress = did.replace(/^did:de?gen:.*:/, '');
 
   const { data: linkedAccounts, isError, refetch } = useReadContract({
@@ -30,7 +31,7 @@ const LinkedAccounts = ({did}: LinkedAccountsProps) => {
                         <Th>ID</Th>
                         <Th>Account</Th>
                         <Th>Purpose</Th>
-                        <Th>Remove</Th>
+                        {hasWriteAccess && <Th>Remove</Th>}
                     </Tr>
                 </Thead>
                 <Tbody>
@@ -39,9 +40,9 @@ const LinkedAccounts = ({did}: LinkedAccountsProps) => {
                             <Td>{account.id}</Td>
                             <Td>{account.account}</Td>
                             <Td>{account.purpose}</Td>
-                            <Td>
+                            {hasWriteAccess && <Td>
                                 <RemoveLinkedAccountButton did={did} onRemoveLinkedAccount={refetch} linkedAccountId={account.id} />
-                            </Td>
+                            </Td>}
                         </Tr>
                     ))}
                 </Tbody>
@@ -49,11 +50,11 @@ const LinkedAccounts = ({did}: LinkedAccountsProps) => {
         ) : (
             <Text>No accounts linked.</Text>
         )}
-        <Box mt={4}>
+        {hasWriteAccess && <Box mt={4}>
           <Flex justifyContent="flex-end">
             <AddLinkedAccountButton did={did} onSuccess={refetch} />
           </Flex>
-        </Box>
+        </Box>}
     </Card>
   );
 };

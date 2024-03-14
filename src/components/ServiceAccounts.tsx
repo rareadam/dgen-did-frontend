@@ -8,6 +8,7 @@ import RemoveServiceAccountButton from './RemoveServiceAccountButton';
 
 interface ServiceAccountsProps {
     did: string;
+    hasWriteAccess?: boolean;
 }
 
 interface ServiceAccount { 
@@ -16,7 +17,7 @@ interface ServiceAccount {
     endpoints: string[]; 
 }
 
-const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did }) => {
+const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did, hasWriteAccess }) => {
     const [serviceAccounts, setServiceAccounts] = useState<ServiceAccount[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
@@ -53,7 +54,7 @@ const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did }) => {
                             <Th>ID</Th>
                             <Th>Types</Th>
                             <Th>Endpoints</Th>
-                            <Th>Remove</Th>
+                            {hasWriteAccess && <Th>Remove</Th>}
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -62,9 +63,9 @@ const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did }) => {
                                 <Td>{account.id}</Td>
                                 <Td>{account.types.join(', ')}</Td>
                                 <Td>{account.endpoints.join(', ')}</Td>
-                                <Td>
+                                {hasWriteAccess && <Td>
                                     <RemoveServiceAccountButton did={did} serviceAccountId={account.id} onRemoveServiceAccount={refetch} />
-                                </Td>
+                                </Td>}
                             </Tr>
                         ))}
                     </Tbody>
@@ -74,7 +75,7 @@ const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did }) => {
             )}
             { isError && <Text color="red.500">Failed to load service accounts.</Text> }
             { isLoading && <Text>Loading service accounts...</Text> }
-            <AddServiceAccountButton did={did} onAddServiceAccount={refetch} key={serviceAccounts.length} />
+            { hasWriteAccess && <AddServiceAccountButton did={did} onAddServiceAccount={refetch} key={serviceAccounts.length} />}
         </Card>
     );
 };

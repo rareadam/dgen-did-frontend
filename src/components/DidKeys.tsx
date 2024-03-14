@@ -6,9 +6,10 @@ import RevokeKeyButton from "./RevokeKeyButton";
 
 interface DidKeyProps {
     did: string;
+    hasWriteAccess?: boolean;
 }
 
-const DidKeys: React.FC<DidKeyProps> = ({ did }) => {
+const DidKeys: React.FC<DidKeyProps> = ({ did, hasWriteAccess }) => {
 
     const didAddress = did.replace(/^did:de?gen:zksync:/, "");
 
@@ -46,7 +47,7 @@ const DidKeys: React.FC<DidKeyProps> = ({ did }) => {
                                     <Th>Public Key</Th>
                                     <Th>Key Usage</Th>
                                     <Th>Key Type</Th>
-                                    <Th>Revoke</Th>
+                                    {hasWriteAccess && <Th>Revoke</Th>}
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -56,13 +57,13 @@ const DidKeys: React.FC<DidKeyProps> = ({ did }) => {
                                         <Td>{key.publicKey}</Td>
                                         <Td>{key.keyUsage}</Td>
                                         <Td>{key.keyType}</Td>
-                                        <Td><RevokeKeyButton did={did} keyId={key.id} onRemoveKey={refetch} /></Td>
+                                        {hasWriteAccess && <Td><RevokeKeyButton did={did} keyId={key.id} onRemoveKey={refetch} /></Td>}
                                     </Tr>
                                 ))}
                             </Tbody>
                         </Table>
                     </VStack>
-                    <AddKeyButton did={did} onAddKey={refetch} />
+                    {hasWriteAccess && <AddKeyButton did={did} onAddKey={refetch} />}
                 </>
             ) : (
                 <Text>No keys found for this DID.</Text>

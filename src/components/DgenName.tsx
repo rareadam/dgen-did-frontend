@@ -8,9 +8,12 @@ import UnregisterDgenNameButton from './UnregisterDgenNameButton';
 
 interface DgenNameProps {
     did: string;
+    hasWriteAccess: boolean;
 }
 
-const DgenName: React.FC<DgenNameProps> = ({ did }) => {
+const DgenName: React.FC<DgenNameProps> = ({ did, hasWriteAccess }) => {
+
+    console.log('DgenName render', {did, hasWriteAccess});
 
     const didAddress = did.replace(/^did:de?gen:.*:/, '') as `0x${string}`;
 
@@ -28,8 +31,8 @@ const DgenName: React.FC<DgenNameProps> = ({ did }) => {
             {isError && <Text>Failed to load name ({error?.message}).</Text>}
             {name ? <Heading as="h3" size="lg" textAlign={"center"}>{name}</Heading> : <Text color="gray.500">No name registered for this DID.</Text>}
             <Flex justifyContent="flex-end">
-                {name && <UnregisterDgenNameButton did={did} onUnregister={refetch} name={name} />}
-                {!name && <AllowanceButton requiredAllowance={BigInt(100)} spender={DidNameRegistryAddress}>
+                {name && hasWriteAccess && <UnregisterDgenNameButton did={did} onUnregister={refetch} name={name} />}
+                {!name && hasWriteAccess && <AllowanceButton requiredAllowance={BigInt(100)} spender={DidNameRegistryAddress}>
                     <RegisterDgenNameButton did={did} onRegisterSuccess={refetch} />
                 </AllowanceButton>}
             </Flex>
