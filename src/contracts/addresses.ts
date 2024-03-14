@@ -9,3 +9,4 @@ export const DidKeyRegistryAddress = "0xCe3fcf2315c874e7a07D7a9fe1ADa5303578fD60
 export const DgenTokenAddress = "0xbc100FAb3281A559584b893A1A0B083F00dBf6D9";
 export const DidServiceAccountRegistryAddress = "0x04B48F7B3949A592819Ba135e5D6b02F779Bac7B";
 export const DidNameRegistryAddress = "0x8f2279A10414e20aA261014B8b04459bF8b0543a";
+export const DidAccountLinkRegistryAddress = "0x1242E2E5Cf3258b11b9D51474B430Bc8ebe7B1DC";

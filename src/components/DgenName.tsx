@@ -26,8 +26,7 @@ const DgenName: React.FC<DgenNameProps> = ({ did }) => {
             <Heading mb="4" fontSize="2xl">Degen Name</Heading>
             {isLoading && <Text>Loading name...</Text>}
             {isError && <Text>Failed to load name ({error?.message}).</Text>}
-            {name ? <Text>Name: {name}</Text> : <Text>No name registered for this DID.</Text>}
-            
+            {name ? <Heading as="h3" size="lg" color="teal.500">{name}</Heading> : <Text color="gray.500">No name registered for this DID.</Text>}
             <Flex justifyContent="flex-end">
                 {name && <UnregisterDgenNameButton did={did} onUnregister={refetch} name={name} />}
                 {!name && <AllowanceButton requiredAllowance={BigInt(100)} spender={DidNameRegistryAddress}>

@@ -41,6 +41,7 @@ function ConnectedCard() {
                     <Select
                         pl="2"
                         w="auto"
+                        value={chain?.id}
                         onChange={(e) => {
                             switchChain({
                                 chainId: parseInt(e.target.value),

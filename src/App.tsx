@@ -35,6 +35,7 @@ import DidKeys from "./components/DidKeys";
 import ServiceAccounts from "./components/ServiceAccounts";
 import DgenName from "./components/DgenName";
 import ConnectedCard from "./components/ConnectedCard";
+import LinkedAccounts from "./components/AccountLinking";
 
 export function App() {
   const [did, setDid] = useState<string>("");
@@ -85,6 +86,9 @@ function Main() {
         </Box>
         <Box w="80%" p="4">
           <DidRegistering />
+        </Box>
+        <Box w="80%" p="4">
+          <LinkedAccounts did={did} />
         </Box>
       </Flex>
     </Box>

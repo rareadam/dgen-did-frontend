@@ -1,5 +1,5 @@
 import { DidKeyRegistryAddress, DidKeyRegistryAbi } from "../contracts";
-import { Text, Card, Heading, List, ListItem, Stat, StatLabel, StatNumber, Box } from "@chakra-ui/react";
+import { Text, Card, Heading, List, ListItem, Box, VStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { useReadContract } from "wagmi";
 import AddKeyButton from "./AddKeyButton";
 import RevokeKeyButton from "./RevokeKeyButton";
@@ -38,33 +38,37 @@ const DidKeys: React.FC<DidKeyProps> = ({ did }) => {
             <Heading mb="4" fontSize="2xl">DID Keys of {did}</Heading>
             {didKeys && didKeys.length > 0 ? (
                 <>
-                    <List spacing={3}>
-                        {didKeys.map((key, index) => (
-                            <ListItem key={index}>
-                                <Card border="1px solid" borderColor="gray.200" p="4" position="relative">
-                                    <Box position="absolute" top="2" right="2">
-                                        <RevokeKeyButton did={did} keyId={key.id} onRemoveKey={refetch} />
-                                    </Box>
-                                    <Stat>
-                                        <StatLabel>Key ID</StatLabel>
-                                        <StatNumber>{key.id}</StatNumber>
-                                        <StatLabel>Public Key</StatLabel>
-                                        <StatNumber>{key.publicKey}</StatNumber>
-                                        <StatLabel>Key Usage</StatLabel>
-                                        <StatNumber>{key.keyUsage}</StatNumber>
-                                        <StatLabel>Key Type</StatLabel>
-                                        <StatNumber>{key.keyType}</StatNumber>
-                                    </Stat>
-                                </Card>
-                            </ListItem>
-                        ))}
-                    </List>
+                    <VStack spacing={4}>
+                        <Table size="md">
+                            <Thead>
+                                <Tr>
+                                    <Th>Key ID</Th>
+                                    <Th>Public Key</Th>
+                                    <Th>Key Usage</Th>
+                                    <Th>Key Type</Th>
+                                    <Th>Revoke</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {didKeys.map((key, index) => (
+                                    <Tr>
+                                        <Td>{key.id}</Td>
+                                        <Td>{key.publicKey}</Td>
+                                        <Td>{key.keyUsage}</Td>
+                                        <Td>{key.keyType}</Td>
+                                        <Td><RevokeKeyButton did={did} keyId={key.id} onRemoveKey={refetch} /></Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    </VStack>
                     <AddKeyButton did={did} onAddKey={refetch} />
                 </>
             ) : (
                 <Text>No keys found for this DID.</Text>
-            )}
-        </Card>
+            )
+            }
+        </Card >
     );
 };
 

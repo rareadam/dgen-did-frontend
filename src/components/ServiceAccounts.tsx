@@ -43,14 +43,6 @@ const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did }) => {
         }
     }, [data, error]);
 
-    if (isLoading) {
-        return <Text>Loading service accounts...</Text>;
-    }
-
-    if (isError) {
-        return <Text>Failed to load service accounts.</Text>;
-    }
-
     return (
         <Card p="6" m="6" boxShadow="lg">
             <Heading mb="4" fontSize="2xl">Service Accounts</Heading>
@@ -73,6 +65,8 @@ const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did }) => {
             ) : (
                 <Text>No service accounts found for this DID.</Text>
             )}
+            { isError && <Text color="red.500">Failed to load service accounts.</Text> }
+            { isLoading && <Text>Loading service accounts...</Text> }
             <AddServiceAccountButton did={did} onAddServiceAccount={refetch} key={serviceAccounts.length} />
         </Card>
     );
