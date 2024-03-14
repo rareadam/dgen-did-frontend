@@ -37,6 +37,7 @@ import ServiceAccounts from "./components/ServiceAccounts";
 import DgenName from "./components/DgenName";
 import ConnectedCard from "./components/ConnectedCard";
 import LinkedAccounts from "./components/AccountLinking";
+import Footer from "./components/Footer";
 
 export function App() {
   const [did, setDid] = useState<string>("");
@@ -145,6 +146,7 @@ function Main() {
           </Box>
         </ConnectedOnly>
       </Flex>
+      <Footer />
     </Box>
   )
 }

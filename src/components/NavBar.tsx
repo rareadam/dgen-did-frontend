@@ -105,8 +105,8 @@ const MenuLinks: FC<MenuLinksProps> = ({ isOpen }) => {
       >
         <MenuItem to="/">Home</MenuItem>
         <MenuItem to="/how">How It works </MenuItem>
-        <MenuItem to="/features">Features </MenuItem>
-        <MenuItem to="/pricing">Pricing </MenuItem>
+        <MenuItem to="/features">Developers </MenuItem>
+        <MenuItem to="/pricing">Ecosystem </MenuItem>
         <MenuItem as="div">
           <ConnectKitButton mode={colorMode} />
         </MenuItem>
