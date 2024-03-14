@@ -53,7 +53,7 @@ export function App() {
 }
 
 function Main() {
-  const {address, isConnected} = useAccount();
+  const { address, isConnected } = useAccount();
 
   const [did, setDid] = useState<string>(`did:dgen:zksync:${address}`);
   useEffect(() => {
@@ -73,22 +73,23 @@ function Main() {
         h="100%"
       >
         <Box w="80%" p="4">
-          <ConnectedCard />
+          <DgenName did={did} />
         </Box>
         <Box w="80%" p="4">
-          <DidKeys did={did}/>
+          <DidKeys did={did} />
         </Box>
         <Box w="80%" p="4">
           <ServiceAccounts did={did} />
         </Box>
         <Box w="80%" p="4">
-          <DgenName did={did} />
+          <LinkedAccounts did={did} />
         </Box>
+
         <Box w="80%" p="4">
           <DidRegistering />
         </Box>
         <Box w="80%" p="4">
-          <LinkedAccounts did={did} />
+          <ConnectedCard />
         </Box>
       </Flex>
     </Box>

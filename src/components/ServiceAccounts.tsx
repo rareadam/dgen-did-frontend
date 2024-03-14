@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Card, Heading, List, ListItem, Stat, StatHelpText, StatLabel, StatNumber, Text } from '@chakra-ui/react';
+import { Box, Card, Heading, List, ListItem, Stat, StatHelpText, StatLabel, StatNumber, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { useReadContract } from 'wagmi';
 import { DidServiceAccountRegistryAbi, DidServiceAccountRegistryAddress } from '../contracts';
 import AddServiceAccountButton from './AddServiceAccountButton';
@@ -47,21 +47,28 @@ const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did }) => {
         <Card p="6" m="6" boxShadow="lg">
             <Heading mb="4" fontSize="2xl">Service Accounts</Heading>
             {serviceAccounts.length > 0 ? (
-                <List spacing={3}>
-                    {serviceAccounts.map((account, index) => (
-                        <Card border="1px solid" borderColor="gray.200" p="4" position="relative">
-                            <Box position="absolute" top="2" right="2">
-                                <RemoveServiceAccountButton did={did} serviceAccountId={account.id} onRemoveServiceAccount={refetch} />
-                            </Box>
-                            <Stat>
-                                <StatLabel>ID</StatLabel>
-                                <StatNumber>{account.id}</StatNumber>
-                                <StatHelpText>Types: {account.types.join(', ')}</StatHelpText>
-                                <StatHelpText>Endpoints: {account.endpoints.join(', ')}</StatHelpText>
-                            </Stat>
-                        </Card>
-                    ))}
-                </List>
+                <Table variant="simple">
+                    <Thead>
+                        <Tr>
+                            <Th>ID</Th>
+                            <Th>Types</Th>
+                            <Th>Endpoints</Th>
+                            <Th>Remove</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {serviceAccounts.map((account, index) => (
+                            <Tr key={index}>
+                                <Td>{account.id}</Td>
+                                <Td>{account.types.join(', ')}</Td>
+                                <Td>{account.endpoints.join(', ')}</Td>
+                                <Td>
+                                    <RemoveServiceAccountButton did={did} serviceAccountId={account.id} onRemoveServiceAccount={refetch} />
+                                </Td>
+                            </Tr>
+                        ))}
+                    </Tbody>
+                </Table>
             ) : (
                 <Text>No service accounts found for this DID.</Text>
             )}

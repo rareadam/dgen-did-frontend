@@ -23,10 +23,10 @@ const DgenName: React.FC<DgenNameProps> = ({ did }) => {
 
     return (
         <Card p="6" m="6" boxShadow="lg">
-            <Heading mb="4" fontSize="2xl">Degen Name</Heading>
+            <Heading mb="4" fontSize="2xl">Dgen Name</Heading>
             {isLoading && <Text>Loading name...</Text>}
             {isError && <Text>Failed to load name ({error?.message}).</Text>}
-            {name ? <Heading as="h3" size="lg" color="teal.500">{name}</Heading> : <Text color="gray.500">No name registered for this DID.</Text>}
+            {name ? <Heading as="h3" size="lg" textAlign={"center"}>{name}</Heading> : <Text color="gray.500">No name registered for this DID.</Text>}
             <Flex justifyContent="flex-end">
                 {name && <UnregisterDgenNameButton did={did} onUnregister={refetch} name={name} />}
                 {!name && <AllowanceButton requiredAllowance={BigInt(100)} spender={DidNameRegistryAddress}>
