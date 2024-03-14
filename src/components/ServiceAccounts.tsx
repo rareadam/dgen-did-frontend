@@ -46,19 +46,19 @@ const ServiceAccounts: React.FC<ServiceAccountsProps> = ({ did, hasWriteAccess }
                 <Table variant="simple">
                     <Thead>
                         <Tr>
-                            <Th>ID</Th>
-                            <Th>Types</Th>
-                            <Th>Endpoints</Th>
-                            {hasWriteAccess && <Th>Remove</Th>}
+                            <Th fontSize="lg" width="20%">ID</Th>
+                            <Th fontSize="lg" width="20%">Types</Th>
+                            <Th fontSize="lg" width="20%">Endpoints</Th>
+                            {hasWriteAccess && <Th fontSize="lg" width="100%" textAlign="right">Remove</Th>}
                         </Tr>
                     </Thead>
                     <Tbody>
                         {serviceAccounts.map((account, index) => (
                             <Tr key={index}>
-                                <Td>{account.id}</Td>
-                                <Td>{account.types.join(', ')}</Td>
-                                <Td>{account.endpoints.join(', ')}</Td>
-                                {hasWriteAccess && <Td>
+                                <Td fontSize="md">{account.id}</Td>
+                                <Td fontSize="md">{account.types.join(', ')}</Td>
+                                <Td fontSize="md">{account.endpoints.join(', ')}</Td>
+                                {hasWriteAccess && <Td fontSize="md" textAlign="right">
                                     <RemoveServiceAccountButton did={did} serviceAccountId={account.id} onRemoveServiceAccount={refetch} />
                                 </Td>}
                             </Tr>

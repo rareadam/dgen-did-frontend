@@ -42,24 +42,24 @@ const DidKeys: React.FC<DidKeyProps> = ({ did, hasWriteAccess }) => {
             {didKeys && didKeys.length > 0 ? (
                 <>
                     <VStack spacing={4}>
-                        <Table size="md">
+                        <Table variant="simple" width="full">
                             <Thead>
                                 <Tr>
-                                    <Th>Key ID</Th>
-                                    <Th>Public Key</Th>
-                                    <Th>Key Usage</Th>
-                                    <Th>Key Type</Th>
-                                    {hasWriteAccess && <Th>Revoke</Th>}
+                                    <Th fontSize="lg" width="20%">Key ID</Th>
+                                    <Th fontSize="lg" width="20%">Public Key</Th>
+                                    <Th fontSize="lg" width="20%">Key Usage</Th>
+                                    <Th fontSize="lg" width="20%">Key Type</Th>
+                                    {hasWriteAccess && <Th fontSize="lg" width="100%" textAlign="right">Revoke</Th>}
                                 </Tr>
                             </Thead>
                             <Tbody>
                                 {didKeys.map((key, index) => (
-                                    <Tr>
-                                        <Td>{key.id}</Td>
-                                        <Td>{key.publicKey}</Td>
-                                        <Td>{key.keyUsage}</Td>
-                                        <Td>{key.keyType}</Td>
-                                        {hasWriteAccess && <Td><RevokeKeyButton did={did} keyId={key.id} onRemoveKey={refetch} /></Td>}
+                                    <Tr key={index}>
+                                        <Td fontSize="md">{key.id}</Td>
+                                        <Td fontSize="md">{key.publicKey}</Td>
+                                        <Td fontSize="md">{key.keyUsage}</Td>
+                                        <Td fontSize="md">{key.keyType}</Td>
+                                        {hasWriteAccess && <Td fontSize="md" textAlign="right"><RevokeKeyButton did={did} keyId={key.id} onRemoveKey={refetch} /></Td>}
                                     </Tr>
                                 ))}
                             </Tbody>

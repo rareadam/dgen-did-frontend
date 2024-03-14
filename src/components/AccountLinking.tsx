@@ -27,22 +27,22 @@ const LinkedAccounts = ({did, hasWriteAccess}: LinkedAccountsProps) => {
         {isError && <Text>Error fetching linked accounts: {error?.message}.</Text>}
         {isLoading && <Text>Loading linked accounts...</Text>}
         {linkedAccounts && linkedAccounts.length > 0 ? (
-            <Table variant="simple">
+            <Table variant="simple" width="full">
                 <Thead>
                     <Tr>
-                        <Th>ID</Th>
-                        <Th>Account</Th>
-                        <Th>Purpose</Th>
-                        {hasWriteAccess && <Th>Remove</Th>}
+                        <Th fontSize="lg" width="20%">ID</Th>
+                        <Th fontSize="lg" width="20%">Account</Th>
+                        <Th fontSize="lg" width="20%">Purpose</Th>
+                        {hasWriteAccess && <Th fontSize="lg" width="100%" textAlign="right">Remove</Th>}
                     </Tr>
                 </Thead>
                 <Tbody>
                     {linkedAccounts.map((account, index) => (
                         <Tr key={index}>
-                            <Td>{account.id}</Td>
-                            <Td>{account.account}</Td>
-                            <Td>{account.purpose}</Td>
-                            {hasWriteAccess && <Td>
+                            <Td fontSize="md">{account.id}</Td>
+                            <Td fontSize="md">{account.account}</Td>
+                            <Td fontSize="md">{account.purpose}</Td>
+                            {hasWriteAccess && <Td fontSize="md" textAlign="right">
                                 <RemoveLinkedAccountButton did={did} onRemoveLinkedAccount={refetch} linkedAccountId={account.id} />
                             </Td>}
                         </Tr>

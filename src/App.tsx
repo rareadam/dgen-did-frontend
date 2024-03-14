@@ -117,30 +117,30 @@ function Main() {
         alignItems="center"
         h="100%"
       >
-        <Box w="80%" p="4">
+        <Box w="90%" p="4">
           {didFound && <Heading as="h2" size="xl" textAlign={"center"}>
             {did}
           </Heading>}
           {!didFound && <Text color="gray.500" textAlign={"center"}>No DID found.</Text>}
         </Box>
-        <Box w="80%" p="4">
+        <Box w="90%" p="4">
           <DgenName did={did} hasWriteAccess={writeAccess} />
         </Box>
-        <Box w="80%" p="4">
+        <Box w="90%" p="4">
           <DidKeys did={did} hasWriteAccess={writeAccess} />
         </Box>
-        <Box w="80%" p="4">
+        <Box w="90%" p="4">
           <ServiceAccounts did={did} hasWriteAccess={writeAccess} />
         </Box>
-        <Box w="80%" p="4">
+        <Box w="90%" p="4">
           <LinkedAccounts did={did} hasWriteAccess={writeAccess} />
         </Box>
 
         <ConnectedOnly>
-          <Box w="80%" p="4">
+          <Box w="90%" p="4">
             <DidRegistering />
           </Box>
-          <Box w="80%" p="4">
+          <Box w="90%" p="4">
             <ConnectedCard />
           </Box>
         </ConnectedOnly>
