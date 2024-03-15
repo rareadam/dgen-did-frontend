@@ -26,16 +26,19 @@ const DgenName: React.FC<DgenNameProps> = ({ did, hasWriteAccess }) => {
 
     return (
         <Card p="6" m="6" boxShadow="lg">
-            <Heading mb="4" fontSize="2xl">Dgen Name</Heading>
-            {isLoading && <Text>Loading name...</Text>}
-            {isError && <Text>Failed to load name ({error?.message}).</Text>}
-            {name ? <Heading as="h3" size="lg" textAlign={"center"} mb={10}>{name}</Heading> : <Text color="gray.500">No name registered for this DID.</Text>}
-            <Flex justifyContent="flex-end">
-                {name && hasWriteAccess && <UnregisterDgenNameButton did={did} onUnregister={refetch} name={name} />}
-                {!name && hasWriteAccess && <AllowanceButton requiredAllowance={BigInt(100)} spender={DidNameRegistryAddress}>
-                    <RegisterDgenNameButton did={did} onRegisterSuccess={refetch} />
-                </AllowanceButton>}
+            <Flex direction={"column"} alignItems={"start"}>
+                <Heading mb="4" fontSize="2xl">Dgen Name</Heading>
+                {isLoading && <Text>Loading name...</Text>}
+                {isError && <Text>Failed to load name ({error?.message}).</Text>}
+                {name ? <Heading as="h3" size="lg" textAlign={"center"} mb={10}>{name}</Heading> : <Text color="gray.500" mb={2}>No name registered for this DID.</Text>}
+                <Flex justifyContent="flex-end" width="100%">
+                    {name && hasWriteAccess && <UnregisterDgenNameButton did={did} onUnregister={refetch} name={name} />}
+                    {!name && hasWriteAccess && <AllowanceButton requiredAllowance={BigInt(100)} spender={DidNameRegistryAddress}>
+                        <RegisterDgenNameButton did={did} onRegisterSuccess={refetch} />
+                    </AllowanceButton>}
+                </Flex>
             </Flex>
+            
         </Card>
     );
 };

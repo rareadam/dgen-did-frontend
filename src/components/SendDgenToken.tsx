@@ -55,8 +55,8 @@ const SendDgenToken = () => {
 
   return (
     <>
-      <Button onClick={onOpen} variant="ghost">
-        Send
+      <Button ml={4} onClick={onOpen} >
+        Send $DGEN
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -71,7 +71,7 @@ const SendDgenToken = () => {
 
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handleSend} isLoading={isLoading}>
-              Send
+              Send $DGEN
             </Button>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>

@@ -51,7 +51,7 @@ const SendNativeToken = () => {
 
   return (
     <>
-      <Button onClick={onOpen} variant="ghost">
+      <Button onClick={onOpen} >
         Send Native Token
       </Button>
 

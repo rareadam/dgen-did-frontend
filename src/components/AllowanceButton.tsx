@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Text, useToast } from '@chakra-ui/react';
+import { Box, Button, Text, useToast } from '@chakra-ui/react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi';
 import { DgenTokenAddress, DidKeyRegistryAddress } from '../contracts';
 import { erc20Abi } from 'viem';
@@ -9,9 +9,10 @@ interface AllowanceButtonProps {
     spender: `0x${string}`;
     children: React.ReactNode;
     address?: `0x${string}`;
+    [x: string]: any; // Allows for arbitrary properties for styling
 }
 
-const AllowanceButton: React.FC<AllowanceButtonProps> = ({ requiredAllowance, children, address, spender }) => {
+const AllowanceButton: React.FC<AllowanceButtonProps> = ({ requiredAllowance, children, address, spender, ...props }) => {
     const { address: connectedAddress } = useAccount();
     if (!connectedAddress) {
         return null;
@@ -98,12 +99,9 @@ const AllowanceButton: React.FC<AllowanceButtonProps> = ({ requiredAllowance, ch
 
     if (allowance < requiredAllowance) {
         return (
-            <>
-                <Button onClick={handleAddAllowance} isLoading={isLoading} colorScheme="blue">
-                    Add Allowance
-                </Button>
-                {isError && error && <Text color="red.500">{error.toString()}</Text>}
-            </>
+            <Button onClick={handleAddAllowance} isLoading={isLoading} colorScheme="blue" {...props}>
+                Add Allowance
+            </Button>
         );
     }
 

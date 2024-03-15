@@ -38,6 +38,7 @@ import DgenName from "./components/DgenName";
 import ConnectedCard from "./components/ConnectedCard";
 import LinkedAccounts from "./components/AccountLinking";
 import Footer from "./components/Footer";
+import RegisterDidCard from "./components/RegisterDidCard";
 
 export function App() {
   const [did, setDid] = useState<string>("");
@@ -122,7 +123,7 @@ function Main() {
           {didFound && <Heading as="h2" size="xl" textAlign={"center"}>
             {did}
           </Heading>}
-          {!didFound && <Text color="gray.500" textAlign={"center"}>No DID found.</Text>}
+          {!didFound && isConnected && <RegisterDidCard />}
         </Box>
         <Box w="90%" p="4">
           <DgenName did={did} hasWriteAccess={writeAccess} />
@@ -138,9 +139,9 @@ function Main() {
         </Box>
 
         <ConnectedOnly>
-          <Box w="90%" p="4">
+          {/* <Box w="90%" p="4">
             <DidRegistering />
-          </Box>
+          </Box> */}
           <Box w="90%" p="4">
             <ConnectedCard />
           </Box>

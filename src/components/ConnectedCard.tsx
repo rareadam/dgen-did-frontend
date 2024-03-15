@@ -1,9 +1,10 @@
 import { DgenTokenAddress } from "../contracts";
-import { Card, Heading, Flex, Select, Text } from "@chakra-ui/react";
+import { Card, Heading, Flex, Select, Text, Box, Spacer } from "@chakra-ui/react";
 import { erc20Abi } from "viem";
 import { useAccount, useSwitchChain, useBlockNumber, useBalance, useReadContract } from "wagmi";
 import SendDgenToken from "./SendDgenToken";
 import SendNativeToken from "./SendNativeToken";
+import GetToken from "./GetToken";
 
 function ConnectedCard() {
     const { isConnected, address, chain } = useAccount();
@@ -59,13 +60,16 @@ function ConnectedCard() {
             {isConnected && (
                 <>
                     <Text mb="4">Current Block: {blockNumber?.toString()}</Text>
-                    <Flex direction={"row"}>
-                        <Text pt="2" mb="4">Balance: {balance?.formatted} ${balance?.symbol}</Text>
+                    <Flex direction="row" align="center" justify="space-between" mb="4">
+                        <Text>Balance: {balance?.formatted} ${balance?.symbol}</Text>
                         <SendNativeToken />
                     </Flex>
-                    <Flex direction={"row"}>
-                        <Text pt="2" mb="4">DgenToken Balance: {tokenBalance} $DGN</Text>
-                        <SendDgenToken />
+                    <Flex direction="row" align="center" justify="space-between">
+                        <Text>DgenToken Balance: {tokenBalance} $DGN</Text>
+                        <Flex>
+                            <GetToken />
+                            <SendDgenToken />
+                        </Flex>
                     </Flex>
                 </>
             )}
