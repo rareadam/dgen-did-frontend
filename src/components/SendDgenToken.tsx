@@ -57,7 +57,7 @@ const SendDgenToken = () => {
   return (
     <>
       <Tooltip label="Send Dgen Token" hasArrow placement="top">
-        <Button ml={4} onClick={onOpen}>
+        <Button onClick={onOpen}>
           <SendLogo />
         </Button>
       </Tooltip>

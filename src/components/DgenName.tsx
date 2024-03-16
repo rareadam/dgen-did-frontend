@@ -8,7 +8,7 @@ import UnregisterDgenNameButton from './UnregisterDgenNameButton';
 
 interface DgenNameProps {
     did: string;
-    name: string;
+    name: string | undefined;
     isLoading: boolean;
     error: Error | null;
     hasWriteAccess: boolean;

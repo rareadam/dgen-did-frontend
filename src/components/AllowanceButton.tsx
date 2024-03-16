@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Text, useToast } from '@chakra-ui/react';
+import { Box, Button, Text, Tooltip, useToast } from '@chakra-ui/react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi';
 import { DgenTokenAddress, DidKeyRegistryAddress } from '../contracts';
 import { erc20Abi } from 'viem';
@@ -99,9 +99,11 @@ const AllowanceButton: React.FC<AllowanceButtonProps> = ({ requiredAllowance, ch
 
     if (allowance < requiredAllowance) {
         return (
-            <Button onClick={handleAddAllowance} isLoading={isLoading} colorScheme="blue" {...props}>
-                Add Allowance
-            </Button>
+            <Tooltip label="Click to add allowance" hasArrow placement="top">
+                <Button onClick={handleAddAllowance} isLoading={isLoading} colorScheme="blue" {...props}>
+                    Add Allowance
+                </Button>
+            </Tooltip>
         );
     }
 

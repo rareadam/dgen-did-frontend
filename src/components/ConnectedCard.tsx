@@ -66,10 +66,7 @@ function ConnectedCard() {
                     </Flex>
                     <Flex direction="row" align="center" justify="space-between">
                         <Text>DgenToken Balance: {tokenBalance} $DGN</Text>
-                        <Flex>
-                            <GetToken />
-                            <SendDgenToken />
-                        </Flex>
+                        <SendDgenToken />
                     </Flex>
                 </>
             )}

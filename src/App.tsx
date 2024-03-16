@@ -1,49 +1,30 @@
 import {
   Box,
-  Button,
-  Card,
   ChakraBaseProvider,
   Flex,
   Heading,
-  Input,
-  List,
-  ListItem,
-  Select,
-  Spacer,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-  Text,
-  VisuallyHiddenInput,
+  Input
 } from "@chakra-ui/react";
 
 import theme from "./theme";
 
-import { useAccount, useBalance, useBlockNumber, useChainId, useReadContract, useSwitchChain } from "wagmi";
-import NavBar from "./components/NavBar";
-import { Web3Provider } from "./components/Web3Provider";
-import { DidKeyRegistryAbi, DidKeyRegistryAddress, DgenTokenAddress, DidNameRegistryAbi, DidNameRegistryAddress, DidAccountLinkRegistryAddress, DidAccountLinkRegistryAbi } from "./contracts";
-import DidRegistering from "./components/DidRegistering";
-import { erc20Abi } from "viem";
 import { useEffect, useState } from "react";
-import SendDgenToken from "./components/SendDgenToken";
-import SendNativeToken from "./components/SendNativeToken";
-import RevokeKeyButton from "./components/RevokeKeyButton";
-import AddKeyButton from "./components/AddKeyButton";
-import AllowanceButton from "./components/AllowanceButton";
-import DidKeys from "./components/DidKeys";
-import ServiceAccounts from "./components/ServiceAccounts";
-import DgenName from "./components/DgenName";
-import ConnectedCard from "./components/ConnectedCard";
+import { useAccount, useReadContract } from "wagmi";
 import LinkedAccounts from "./components/AccountLinking";
+import ConnectedCard from "./components/ConnectedCard";
+import DgenName from "./components/DgenName";
 import Footer from "./components/Footer";
+import NavBar from "./components/NavBar";
 import RegisterDidCard from "./components/RegisterDidCard";
+import ServiceAccounts from "./components/ServiceAccounts";
+import { Web3Provider } from "./components/Web3Provider";
+import { DidAccountLinkRegistryAbi, DidAccountLinkRegistryAddress, DidKeyRegistryAbi, DidKeyRegistryAddress, DidNameRegistryAbi, DidNameRegistryAddress } from "./contracts";
+import useDidExists from "./hooks/useDidExists";
 import useDidKeys from "./hooks/useDidKeys";
 import useDidLinkedAccounts from "./hooks/useDidLinkedAccounts";
 import useDidName from "./hooks/useDidName";
 import useDidServiceAccounts from "./hooks/useDidServiceAccounts";
-import useDidExists from "./hooks/useDidExists";
+import DidKeysResponsive from "./components/DidKeys";
 
 export function App() {
   const [did, setDid] = useState<string>("");
@@ -60,7 +41,7 @@ export function App() {
 
 function Main() {
   const { address, isConnected } = useAccount();
-  const { didExists: connectedAccountHasDid, refetch: refetchConnectedAccountHasDid } = useDidExists(`did:dgen:zksync:${address}`)
+  const { didExists: connectedAccountHasDid, isLoading: connectedAccountHasDidLoading, refetch: refetchConnectedAccountHasDid } = useDidExists(`did:dgen:zksync:${address}`)
 
   let defaultDid = `did:dgen:zksync:${address}`
   if (!isConnected) {
@@ -101,6 +82,7 @@ function Main() {
   useEffect(() => {
     if (!didKeys) {
       setDidFound(false);
+      setWriteAccess(false);
       return;
     }
     if (didKeys.length > 0) {
@@ -109,6 +91,7 @@ function Main() {
       setDidFound(true);
     } else {
       setDidFound(false);
+      setWriteAccess(false);
     }
   }, [didKeys]);
 
@@ -128,13 +111,12 @@ function Main() {
           {didFound && <Heading as="h2" size="xl" textAlign={"center"}>
             {did}
           </Heading>}
-          {isConnected && !connectedAccountHasDid && <RegisterDidCard onSuccess={() => {
+          {isConnected && !connectedAccountHasDidLoading && !connectedAccountHasDid && <RegisterDidCard onSuccess={() => {
             refetchDidKeys();
             refetchConnectedAccountHasDid();
           }} />}
         </Box>
-        <Box w="90%" p="4">
-          {didName && 
+        <Box w="90%" p="4"> 
           <DgenName 
             did={did}
             name={didName}
@@ -142,10 +124,10 @@ function Main() {
             error={didNameError}
             isLoading={isDidNameLoading}
             onUnregister={refetchDidName}
-            onRegister={refetchDidName} />}
+            onRegister={refetchDidName} />
         </Box>
         <Box w="90%" p="4">
-          <DidKeys 
+          <DidKeysResponsive
             did={did} 
             didKeys={didKeys} 
             hasWriteAccess={writeAccess} 

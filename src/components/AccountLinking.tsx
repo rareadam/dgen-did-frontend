@@ -3,6 +3,7 @@ import { Box, Text, VStack, Button, useToast, Card, Heading, Flex, Table, Tbody,
 import AddLinkedAccountButton from './AddLinkedAccountButton';
 import RemoveLinkedAccountButton from './RemoveLinkedAccountButton';
 import { LinkedAccount } from '@/hooks/useDidLinkedAccounts';
+import LongString from './LongString';
 
 interface LinkedAccountsProps {
     did: string;
@@ -34,7 +35,7 @@ const LinkedAccounts = ({did, hasWriteAccess, linkedAccounts, isLoading, error, 
                     {linkedAccounts.map((account, index) => (
                         <Tr key={index}>
                             <Td fontSize="md">{account.id}</Td>
-                            <Td fontSize="md">{account.account}</Td>
+                            <Td fontSize="md"><LongString text={account.account} maxLength={20} /></Td>
                             <Td fontSize="md">{account.purpose}</Td>
                             {hasWriteAccess && <Td fontSize="md" textAlign="right">
                                 <RemoveLinkedAccountButton did={did} onRemoveLinkedAccount={onRemoveLinkedAccount} linkedAccountId={account.id} />

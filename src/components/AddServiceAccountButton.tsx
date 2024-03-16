@@ -1,11 +1,8 @@
-
-import React, { useState, useEffect } from 'react';
-import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, useToast, Spinner, Box, Flex } from '@chakra-ui/react';
-import { useAccount, useWaitForTransactionReceipt, useWriteContract, useReadContract } from 'wagmi';
-import { DidServiceAccountRegistryAbi, DidServiceAccountRegistryAddress, DgenTokenAddress } from '../contracts';
-import { erc20Abi } from 'viem';
+import React, { useState } from 'react';
+import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, useToast, Box, Flex, FormControl, FormLabel } from '@chakra-ui/react';
+import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { DidServiceAccountRegistryAbi, DidServiceAccountRegistryAddress } from '../contracts';
 import AllowanceButton from './AllowanceButton';
-import KeySelect from './KeySelect';
 
 interface AddServiceAccountButtonProps {
     did: string;
@@ -65,7 +62,6 @@ const AddServiceAccountButton = ({ did, onAddServiceAccount }: AddServiceAccount
         });
     }
 
-
     const handleAddServiceAccount = async () => {
         if (id === '' || serviceTypes.length === 0 || serviceEndpoints.length === 0) {
             toast({
@@ -94,19 +90,28 @@ const AddServiceAccountButton = ({ did, onAddServiceAccount }: AddServiceAccount
 
     return (
         <Box pt={4}>
-            <Flex justifyContent="flex-end">
-                <Button onClick={onOpen} colorScheme="teal">Add Account</Button>
+            <Flex justifyContent="flex-end" >
+                <Button onClick={onOpen} colorScheme="teal">Add Service Account</Button>
             </Flex>
 
-            <Modal isOpen={isOpen} onClose={onClose} isCentered>
+            <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Add New Service Account</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
-                        <Input placeholder="Service Account ID" value={id} onChange={(e) => setId(e.target.value)} mb={3} />
-                        <Input placeholder="Service Account Types" value={serviceTypes.join(',')} onChange={(e) => setServiceTypes(e.target.value.split(','))} mb={3} />
-                        <Input placeholder="Service Account Endpoints" value={serviceEndpoints.join(',')} onChange={(e) => setServiceEndpoints(e.target.value.split(','))} mb={3} />
+                        <FormControl>
+                            <FormLabel htmlFor='serviceAccountId'>Service Account ID</FormLabel>
+                            <Input id='serviceAccountId' placeholder="Enter the unique identifier for the Service Account" value={id} onChange={(e) => setId(e.target.value)} mb={3} />
+                        </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel htmlFor='serviceAccountTypes'>Service Account Types</FormLabel>
+                            <Input id='serviceAccountTypes' placeholder="Enter types separated by commas (e.g., type1,type2)" value={serviceTypes.join(',')} onChange={(e) => setServiceTypes(e.target.value.split(','))} mb={3} />
+                        </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel htmlFor='serviceAccountEndpoints'>Service Account Endpoints</FormLabel>
+                            <Input id='serviceAccountEndpoints' placeholder="Enter endpoints separated by commas (e.g., endpoint1,endpoint2)" value={serviceEndpoints.join(',')} onChange={(e) => setServiceEndpoints(e.target.value.split(','))} mb={3} />
+                        </FormControl>
                     </ModalBody>
 
                     <ModalFooter>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, useToast, Spinner, Box, Flex } from '@chakra-ui/react';
+import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, useToast, Spinner, Box, Flex, Tooltip, FormControl, FormLabel } from '@chakra-ui/react';
 import { useAccount, useWaitForTransactionReceipt, useWriteContract, useReadContract } from 'wagmi';
 import { DidKeyRegistryAbi, DidKeyRegistryAddress, DgenTokenAddress } from '../contracts';
 import { erc20Abi } from 'viem';
@@ -14,7 +14,7 @@ interface AddKeyButtonProps {
 const AddKeyButton = ({ did, onAddKey }: AddKeyButtonProps) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [id, setId] = useState('');
-    const [keyType, setKeyType] = useState('');
+    const [keyType, setKeyType] = useState(0);
     const [keyUsage, setKeyUsage] = useState('');
     const [publicKey, setPublicKey] = useState('');
     const toast = useToast();
@@ -72,7 +72,7 @@ const AddKeyButton = ({ did, onAddKey }: AddKeyButtonProps) => {
         }
         const key: { id: string, keyType: number; keyUsage: `0x${string}`; publicKey: `0x${string}`; } = {
             id,
-            keyType: parseInt(keyType),
+            keyType: keyType,
             keyUsage: keyUsage as `0x${string}`,
             publicKey: publicKey as `0x${string}`,
         }
@@ -98,18 +98,31 @@ const AddKeyButton = ({ did, onAddKey }: AddKeyButtonProps) => {
                     <ModalHeader>Add New Key</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
-                        <Input placeholder="ID" value={id} onChange={(e) => setId(e.target.value)} mb={3} />
-                        <Input placeholder="Key Type" value={keyType} onChange={(e) => setKeyType(e.target.value)} mb={3} />
-                        <Input placeholder="Key Usage" value={keyUsage} onChange={(e) => setKeyUsage(e.target.value)} mb={3} />
-                        <KeySelect onKeySubmit={setPublicKey} />
-
+                        <FormControl>
+                            <FormLabel htmlFor='keyName'>Key Name</FormLabel>
+                            <Input id='keyName' placeholder="Enter the name of the key" value={id} onChange={(e) => setId(e.target.value)} mb={3} />
+                        </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel htmlFor='keyType'>Key Type (leave it like it is)</FormLabel>
+                            <Input id='keyType' defaultValue={0} value={keyType} onChange={(e) => setKeyType(parseInt(e.target.value))} mb={3} />
+                        </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel htmlFor='keyUsage'>Key Usage</FormLabel>
+                            <Input id='keyUsage' placeholder="Specify the key usage hash" value={keyUsage} onChange={(e) => setKeyUsage(e.target.value)} mb={3} />
+                        </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel htmlFor='publicKey'>Public Key</FormLabel>
+                            <KeySelect onKeySubmit={setPublicKey} />
+                        </FormControl>
                     </ModalBody>
 
                     <ModalFooter>
                         <AllowanceButton requiredAllowance={BigInt(100)} spender={DidKeyRegistryAddress}>
-                            <Button colorScheme="blue" mr={3} onClick={handleAddKey} isLoading={addKeyisLoading || addKeyIsConfirming}>
-                                Add Key
-                            </Button>
+                            <Tooltip label="Add a new key to your DID" hasArrow placement="top">
+                                <Button colorScheme="blue" mr={3} onClick={handleAddKey} isLoading={addKeyisLoading || addKeyIsConfirming}>
+                                    Add Key
+                                </Button>
+                            </Tooltip>
                         </AllowanceButton>
                         <Button onClick={onClose}>Cancel</Button>
                     </ModalFooter>
