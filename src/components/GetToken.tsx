@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
-import { ethers } from 'ethers';
+import React from 'react';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
-import { writeContract } from 'viem/actions';
 import { Button, Box, useToast } from '@chakra-ui/react';
 import { FaucetAbi, FaucetAddress } from '../contracts';
 
-
 interface GetTokenProps {
     onSuccess?: () => void;
+    [x: string]: any; // Allows any other prop
 }
 
-const GetToken = ({onSuccess}: GetTokenProps) => {
+const GetToken = ({onSuccess, ...rest}: GetTokenProps) => {
 
     const { writeContract, data: hash, isPending, isError, error } = useWriteContract();
     const { isSuccess , isLoading} = useWaitForTransactionReceipt({hash});
@@ -55,8 +53,8 @@ const GetToken = ({onSuccess}: GetTokenProps) => {
     };
 
     return (
-        <Box>
-            <Button onClick={getTokens} isLoading={isPending || isLoading}>
+        <Box  {...rest}>
+            <Button colorScheme='teal' w="100%" onClick={getTokens} isLoading={isPending || isLoading}>
                 {'Get free $DGEN'}
             </Button>
             {isError && <p style={{ color: 'red' }}>{error?.message}</p>}

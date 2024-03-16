@@ -39,6 +39,11 @@ import ConnectedCard from "./components/ConnectedCard";
 import LinkedAccounts from "./components/AccountLinking";
 import Footer from "./components/Footer";
 import RegisterDidCard from "./components/RegisterDidCard";
+import useDidKeys from "./hooks/useDidKeys";
+import useDidLinkedAccounts from "./hooks/useDidLinkedAccounts";
+import useDidName from "./hooks/useDidName";
+import useDidServiceAccounts from "./hooks/useDidServiceAccounts";
+import useDidExists from "./hooks/useDidExists";
 
 export function App() {
   const [did, setDid] = useState<string>("");
@@ -47,9 +52,7 @@ export function App() {
     <ChakraBaseProvider theme={theme}>
       <Web3Provider>
         <NavBar />
-        {/* <ConnectedOnly> */}
         <Main />
-        {/* </ConnectedOnly> */}
       </Web3Provider>
     </ChakraBaseProvider>
   );
@@ -57,6 +60,7 @@ export function App() {
 
 function Main() {
   const { address, isConnected } = useAccount();
+  const { didExists: connectedAccountHasDid, refetch: refetchConnectedAccountHasDid } = useDidExists(`did:dgen:zksync:${address}`)
 
   let defaultDid = `did:dgen:zksync:${address}`
   if (!isConnected) {
@@ -80,16 +84,17 @@ function Main() {
 
   const didAddress = did.replace(/^did:de?gen:zksync:/, "") as `0x${string}`;
 
-  const { data: didKeys, refetch: refetchDidKeys } = useReadContract({
-    abi: DidKeyRegistryAbi,
-    address: DidKeyRegistryAddress,
-    functionName: "getKeys",
-    args: [didAddress],
-  });
+  const { didKeys, isLoading: isDidKeysLoading, error: didKeysError, refetch: refetchDidKeys } = useDidKeys(did);
+  const { serviceAccounts, isLoading: isServiceAccountsLoading, error: serviceAccountsError, refetch: refetchServiceAccounts } = useDidServiceAccounts(did);
+  const { didName, isLoading: isDidNameLoading, error: didNameError, refetch: refetchDidName } = useDidName(did);
+  const { linkedAccounts, isLoading: isLinkedAccountsLoading, error: linkedAccountsError, refetch: refetchLinkedAccounts } = useDidLinkedAccounts(did);
 
   const onDidChange = (did: string) => {
     setDid(did);
     refetchDidKeys();
+    refetchServiceAccounts();
+    refetchDidName();
+    refetchLinkedAccounts();
   };
 
   // check if current address is in the list of did keys
@@ -123,19 +128,54 @@ function Main() {
           {didFound && <Heading as="h2" size="xl" textAlign={"center"}>
             {did}
           </Heading>}
-          {!didFound && isConnected && <RegisterDidCard />}
+          {isConnected && !connectedAccountHasDid && <RegisterDidCard onSuccess={() => {
+            refetchDidKeys();
+            refetchConnectedAccountHasDid();
+          }} />}
         </Box>
         <Box w="90%" p="4">
-          <DgenName did={did} hasWriteAccess={writeAccess} />
+          {didName && 
+          <DgenName 
+            did={did}
+            name={didName}
+            hasWriteAccess={writeAccess}
+            error={didNameError}
+            isLoading={isDidNameLoading}
+            onUnregister={refetchDidName}
+            onRegister={refetchDidName} />}
         </Box>
         <Box w="90%" p="4">
-          <DidKeys did={did} hasWriteAccess={writeAccess} />
+          <DidKeys 
+            did={did} 
+            didKeys={didKeys} 
+            hasWriteAccess={writeAccess} 
+            isLoading={isDidKeysLoading} 
+            error={didKeysError} 
+            onAddKey={refetchDidKeys}
+            onRevokeKey={refetchDidKeys}
+          />
         </Box>
         <Box w="90%" p="4">
-          <ServiceAccounts did={did} hasWriteAccess={writeAccess} />
+          <ServiceAccounts 
+            did={did} 
+            serviceAccounts={serviceAccounts} 
+            hasWriteAccess={writeAccess} 
+            isLoading={isServiceAccountsLoading} 
+            error={serviceAccountsError} 
+            onAddServiceAccount={refetchServiceAccounts} 
+            onRemoveServiceAccount={refetchServiceAccounts} 
+          />
         </Box>
         <Box w="90%" p="4">
-          <LinkedAccounts did={did} hasWriteAccess={writeAccess} />
+          <LinkedAccounts 
+            did={did} 
+            linkedAccounts={linkedAccounts} 
+            hasWriteAccess={writeAccess} 
+            isLoading={isLinkedAccountsLoading} 
+            error={linkedAccountsError} 
+            onAddLinkedAccount={refetchLinkedAccounts} 
+            onRemoveLinkedAccount={refetchLinkedAccounts} 
+          />
         </Box>
 
         <ConnectedOnly>

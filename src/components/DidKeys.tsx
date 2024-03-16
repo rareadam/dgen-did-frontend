@@ -1,44 +1,24 @@
-import { DidKeyRegistryAddress, DidKeyRegistryAbi } from "../contracts";
 import { Text, Card, Heading, List, ListItem, Box, VStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { useReadContract } from "wagmi";
 import AddKeyButton from "./AddKeyButton";
 import RevokeKeyButton from "./RevokeKeyButton";
+import type { DidKey } from "../hooks/useDidKeys";
 
 interface DidKeyProps {
     did: string;
     hasWriteAccess?: boolean;
+    didKeys: readonly DidKey[] | undefined;
+    isLoading: boolean;
+    error: Error | null;
+    onAddKey: () => void;
+    onRevokeKey: () => void;
 }
 
-const DidKeys: React.FC<DidKeyProps> = ({ did, hasWriteAccess }) => {
-
-    const didAddress = did.replace(/^did:de?gen:zksync:/, "");
-
-    // check if didAddress is a valid eth address
-    const isEthAddress = didAddress.match(/^0x[0-9a-fA-F]{40}$/);
-
-    // if (!isEthAddress) {
-    //     return (
-    //         <Card p="6" m="6" boxShadow="lg">
-    //             <Heading mb="4" fontSize="2xl">DID Keys of {did}</Heading>
-    //             <Text color="red.500">Invalid DID</Text>
-    //         </Card>
-    //     )
-    // }
-
-    const { data: didKeys, isLoading: isLoadingDidKeys, isError, error, refetch } = useReadContract({
-        address: DidKeyRegistryAddress,
-        abi: DidKeyRegistryAbi,
-        functionName: 'getKeys',
-        args: [didAddress as `0x${string}`],
-    });
-
-    // if (isLoadingDidKeys) return <Text>Loading keys...</Text>;
-
+const DidKeys: React.FC<DidKeyProps> = ({ did, hasWriteAccess, didKeys, isLoading, error, onAddKey, onRevokeKey }) => {
     return (
         <Card p="6" m="6" boxShadow="lg">
             <Heading mb="4" fontSize="2xl">DID Keys</Heading>
-            {isError && error && <Text>Error fetching keys: {error.message}</Text>}
-            {isLoadingDidKeys && <Text>Loading keys...</Text>}
+            {isLoading && <Text>Loading keys...</Text>}
+            {error && <Text>Error fetching keys: {error instanceof Error ? error.message : String(error)}</Text>}
             {didKeys && didKeys.length > 0 ? (
                 <>
                     <VStack spacing={4}>
@@ -49,7 +29,7 @@ const DidKeys: React.FC<DidKeyProps> = ({ did, hasWriteAccess }) => {
                                     <Th fontSize="lg" width="20%">Public Key</Th>
                                     <Th fontSize="lg" width="20%">Key Usage</Th>
                                     <Th fontSize="lg" width="20%">Key Type</Th>
-                                    {hasWriteAccess && <Th fontSize="lg" width="100%" textAlign="right">Revoke</Th>}
+                                    {hasWriteAccess && <Th fontSize="lg" width="20%" textAlign="right">Revoke</Th>}
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -59,18 +39,17 @@ const DidKeys: React.FC<DidKeyProps> = ({ did, hasWriteAccess }) => {
                                         <Td fontSize="md">{key.publicKey}</Td>
                                         <Td fontSize="md">{key.keyUsage}</Td>
                                         <Td fontSize="md">{key.keyType}</Td>
-                                        {hasWriteAccess && <Td fontSize="md" textAlign="right"><RevokeKeyButton did={did} keyId={key.id} onRemoveKey={refetch} /></Td>}
+                                        {hasWriteAccess && <Td fontSize="md" textAlign="right"><RevokeKeyButton did={did} keyId={key.id} onRemoveKey={onRevokeKey} /></Td>}
                                     </Tr>
                                 ))}
                             </Tbody>
                         </Table>
                     </VStack>
-                    {hasWriteAccess && <AddKeyButton did={did} onAddKey={refetch} />}
+                    {hasWriteAccess && <AddKeyButton did={did} onAddKey={onAddKey} />}
                 </>
             ) : (
                 <Text color="gray.500">No keys found for this DID.</Text>
-            )
-            }
+            )}
         </Card >
     );
 };

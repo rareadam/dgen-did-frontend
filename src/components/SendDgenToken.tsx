@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, useToast } from '@chakra-ui/react';
+import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, useToast, Tooltip } from '@chakra-ui/react';
 import { useAccount, useWriteContract } from 'wagmi';
 import { erc20Abi } from 'viem';
 import { DgenTokenAddress } from '../contracts';
+import SendLogo from './SendLogo';
 
 
 const SendDgenToken = () => {
@@ -55,9 +56,11 @@ const SendDgenToken = () => {
 
   return (
     <>
-      <Button ml={4} onClick={onOpen} >
-        Send $DGEN
-      </Button>
+      <Tooltip label="Send Dgen Token" hasArrow placement="top">
+        <Button ml={4} onClick={onOpen}>
+          <SendLogo />
+        </Button>
+      </Tooltip>
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />

@@ -1,6 +1,6 @@
 import { DgenTokenAddress } from "../contracts";
 import { Card, Heading, Flex, Select, Text, Box, Spacer } from "@chakra-ui/react";
-import { erc20Abi } from "viem";
+import { erc20Abi, formatEther } from "viem";
 import { useAccount, useSwitchChain, useBlockNumber, useBalance, useReadContract } from "wagmi";
 import SendDgenToken from "./SendDgenToken";
 import SendNativeToken from "./SendNativeToken";
@@ -15,7 +15,7 @@ function ConnectedCard() {
     });
 
     // Added for DgenToken balance
-    const { data: DgenTokenBalance, error, isLoading } = useReadContract({
+    const { data: dgenTokenBalance, error, isLoading } = useReadContract({
         address: DgenTokenAddress, // Replace with actual DgenToken contract address
         abi: erc20Abi, // Replace with actual DgenToken ABI
         functionName: "balanceOf",
@@ -28,7 +28,7 @@ function ConnectedCard() {
     } else if (isLoading) {
         tokenBalance = "Loading...";
     } else {
-        tokenBalance = DgenTokenBalance?.toString();
+        tokenBalance = formatEther(dgenTokenBalance ?? BigInt(0));
     }
 
     return (
@@ -76,6 +76,9 @@ function ConnectedCard() {
         </Card>
     );
 }
+
+
+
 
 export default ConnectedCard;
 

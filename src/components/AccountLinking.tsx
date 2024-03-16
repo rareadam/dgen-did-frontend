@@ -1,30 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Box, Text, VStack, Button, useToast, Card, Heading, Flex, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import { useAccount, useReadContract } from 'wagmi';
-import { DidAccountLinkRegistryAddress, DidAccountLinkRegistryAbi } from '../contracts';
 import AddLinkedAccountButton from './AddLinkedAccountButton';
 import RemoveLinkedAccountButton from './RemoveLinkedAccountButton';
+import { LinkedAccount } from '@/hooks/useDidLinkedAccounts';
 
 interface LinkedAccountsProps {
     did: string;
     hasWriteAccess?: boolean;
+    linkedAccounts: readonly LinkedAccount[] | undefined;
+    isLoading: boolean;
+    error: Error | null;
+    onAddLinkedAccount: () => void;
+    onRemoveLinkedAccount: () => void;
 }
 
-const LinkedAccounts = ({did, hasWriteAccess}: LinkedAccountsProps) => {
-  const didAddress = did.replace(/^did:de?gen:.*:/, '');
-
-  const { data: linkedAccounts, isError, error, isLoading, refetch } = useReadContract({
-    address: DidAccountLinkRegistryAddress,
-    // Assuming the ABI is correctly imported and contains a function to get linked accounts
-    abi: DidAccountLinkRegistryAbi, // This ABI needs to be defined/imported in your project
-    functionName: 'getLinkedAccounts',
-    args: [didAddress as `0x${string}`],
-  });
-
+const LinkedAccounts = ({did, hasWriteAccess, linkedAccounts, isLoading, error, onAddLinkedAccount, onRemoveLinkedAccount}: LinkedAccountsProps) => {
   return (
     <Card p="6" m="6" boxShadow="lg">
         <Heading mb="4" fontSize="2xl">Linked Accounts</Heading>
-        {isError && <Text>Error fetching linked accounts: {error?.message}.</Text>}
+        {error && <Text>Error fetching linked accounts: {error.message}.</Text>}
         {isLoading && <Text>Loading linked accounts...</Text>}
         {linkedAccounts && linkedAccounts.length > 0 ? (
             <Table variant="simple" width="full">
@@ -43,7 +37,7 @@ const LinkedAccounts = ({did, hasWriteAccess}: LinkedAccountsProps) => {
                             <Td fontSize="md">{account.account}</Td>
                             <Td fontSize="md">{account.purpose}</Td>
                             {hasWriteAccess && <Td fontSize="md" textAlign="right">
-                                <RemoveLinkedAccountButton did={did} onRemoveLinkedAccount={refetch} linkedAccountId={account.id} />
+                                <RemoveLinkedAccountButton did={did} onRemoveLinkedAccount={onRemoveLinkedAccount} linkedAccountId={account.id} />
                             </Td>}
                         </Tr>
                     ))}
@@ -54,7 +48,7 @@ const LinkedAccounts = ({did, hasWriteAccess}: LinkedAccountsProps) => {
         )}
         {hasWriteAccess && <Box mt={4}>
           <Flex justifyContent="flex-end">
-            <AddLinkedAccountButton did={did} onSuccess={refetch} />
+            <AddLinkedAccountButton did={did} onSuccess={onAddLinkedAccount} />
           </Flex>
         </Box>}
     </Card>

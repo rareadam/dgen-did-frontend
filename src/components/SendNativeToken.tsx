@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, useToast } from '@chakra-ui/react';
+import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Input, useToast, Tooltip } from '@chakra-ui/react';
 import { useAccount, useSendTransaction } from 'wagmi';
 import { parseEther } from 'viem';
+import SendLogo from './SendLogo';
 
 const SendNativeToken = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -51,9 +52,11 @@ const SendNativeToken = () => {
 
   return (
     <>
-      <Button onClick={onOpen} >
-        Send Native Token
-      </Button>
+      <Tooltip label="Send Native Token" hasArrow placement="top">
+        <Button onClick={onOpen}>
+          <SendLogo />
+        </Button>
+      </Tooltip>
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
