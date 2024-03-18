@@ -13,7 +13,7 @@ const PeekingPepe = ({ children }: PeekingPepeProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const peekPepe = () => {
       if (containerRef.current) {
         const containerWidth = containerRef.current.offsetWidth;
         const pepeWidth = 100; // Assuming Pepe's width is 100px
@@ -27,12 +27,22 @@ const PeekingPepe = ({ children }: PeekingPepeProps) => {
         console.log("show pepe");
         setTimeout(() => {
           setPepeOpacity(0); // Gradually hide Pepe by changing opacity
-          setTimeout(() => setShowPepe(false), 2000); // Wait for fade-out effect to finish before hiding Pepe
+          setTimeout(() => {
+            setShowPepe(false);
+            // Schedule next peek
+            setTimeout(peekPepe, Math.random() * (60000 - 10000) + 10000); // Pepe peeks at a random time between 10 and 60 seconds
+          }, 2000); // Wait for fade-out effect to finish before hiding Pepe
         }, 2000); // Pepe will peek for 2 seconds, then start fading out
       }
-    }, Math.random() * (60000 - 10000) + 10000); // Pepe peeks at a random time between 10 and 60 seconds
+    };
 
-    return () => clearInterval(interval);
+    // Initial call to start the sequence
+    setTimeout(peekPepe, Math.random() * (60000 - 10000) + 10000);
+
+    // Cleanup function to prevent memory leaks or unexpected behavior
+    return () => {
+      // Since there's no interval or timeout ID to clear, we rely on component unmount logic
+    };
   }, []);
 
   return (
