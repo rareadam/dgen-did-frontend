@@ -25,6 +25,7 @@ import useDidLinkedAccounts from "./hooks/useDidLinkedAccounts";
 import useDidName from "./hooks/useDidName";
 import useDidServiceAccounts from "./hooks/useDidServiceAccounts";
 import DidKeysResponsive from "./components/DidKeys";
+import PeekingPepe from "./components/PeekingPepe";
 
 export function App() {
   const [did, setDid] = useState<string>("");
@@ -116,8 +117,8 @@ function Main() {
             refetchConnectedAccountHasDid();
           }} />}
         </Box>
-        <Box w="90%" p="4"> 
-          <DgenName 
+        <CardBox>
+          <DgenName
             did={did}
             name={didName}
             hasWriteAccess={writeAccess}
@@ -125,53 +126,54 @@ function Main() {
             isLoading={isDidNameLoading}
             onUnregister={refetchDidName}
             onRegister={refetchDidName} />
-        </Box>
-        <Box w="90%" p="4">
+        </CardBox>
+        <CardBox>
           <DidKeysResponsive
-            did={did} 
-            didKeys={didKeys} 
-            hasWriteAccess={writeAccess} 
-            isLoading={isDidKeysLoading} 
-            error={didKeysError} 
+            did={did}
+            didKeys={didKeys}
+            hasWriteAccess={writeAccess}
+            isLoading={isDidKeysLoading}
+            error={didKeysError}
             onAddKey={refetchDidKeys}
             onRevokeKey={refetchDidKeys}
           />
-        </Box>
-        <Box w="90%" p="4">
-          <ServiceAccounts 
-            did={did} 
-            serviceAccounts={serviceAccounts} 
-            hasWriteAccess={writeAccess} 
-            isLoading={isServiceAccountsLoading} 
-            error={serviceAccountsError} 
-            onAddServiceAccount={refetchServiceAccounts} 
-            onRemoveServiceAccount={refetchServiceAccounts} 
+        </CardBox>
+        <CardBox>
+          <ServiceAccounts
+            did={did}
+            serviceAccounts={serviceAccounts}
+            hasWriteAccess={writeAccess}
+            isLoading={isServiceAccountsLoading}
+            error={serviceAccountsError}
+            onAddServiceAccount={refetchServiceAccounts}
+            onRemoveServiceAccount={refetchServiceAccounts}
           />
-        </Box>
-        <Box w="90%" p="4">
-          <LinkedAccounts 
-            did={did} 
-            linkedAccounts={linkedAccounts} 
-            hasWriteAccess={writeAccess} 
-            isLoading={isLinkedAccountsLoading} 
-            error={linkedAccountsError} 
-            onAddLinkedAccount={refetchLinkedAccounts} 
-            onRemoveLinkedAccount={refetchLinkedAccounts} 
+        </CardBox>
+        <CardBox>
+          <LinkedAccounts
+            did={did}
+            linkedAccounts={linkedAccounts}
+            hasWriteAccess={writeAccess}
+            isLoading={isLinkedAccountsLoading}
+            error={linkedAccountsError}
+            onAddLinkedAccount={refetchLinkedAccounts}
+            onRemoveLinkedAccount={refetchLinkedAccounts}
           />
-        </Box>
+        </CardBox>
 
         <ConnectedOnly>
-          {/* <Box w="90%" p="4">
-            <DidRegistering />
-          </Box> */}
-          <Box w="90%" p="4">
+          <CardBox>
             <ConnectedCard />
-          </Box>
+          </CardBox>
         </ConnectedOnly>
       </Flex>
       <Footer />
     </Box>
   )
+}
+
+function CardBox({ children }: { children: React.ReactNode }) {
+  return <Box w="90%" p="4"><PeekingPepe>{children}</PeekingPepe></Box>
 }
 
 interface ConnectedOnlyProps {
