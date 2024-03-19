@@ -32,7 +32,7 @@ const RegisterDidCard = ({onSuccess}: RegisterDidCardProps) => {
             address: DidKeyRegistryAddress,
             abi: DidKeyRegistryAbi,
             functionName: 'registerDid',
-            args: [[{ id: 'default', keyType: 0, keyUsage: KEY_USAGE_AUTH, publicKey: address }]],
+            args: [[{ id: 'default', keyType: 0, keyUsages: [KEY_USAGE_AUTH], publicKey: address, sudo: false }]],
         });
     };
 

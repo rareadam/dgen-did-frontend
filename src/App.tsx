@@ -28,8 +28,6 @@ import DidKeysResponsive from "./components/DidKeys";
 import PeekingPepe from "./components/PeekingPepe";
 
 export function App() {
-  const [did, setDid] = useState<string>("");
-
   return (
     <ChakraBaseProvider theme={theme}>
       <Web3Provider>
@@ -42,12 +40,9 @@ export function App() {
 
 function Main() {
   const { address, isConnected } = useAccount();
-  const { didExists: connectedAccountHasDid, isLoading: connectedAccountHasDidLoading, refetch: refetchConnectedAccountHasDid } = useDidExists(`did:dgen:zksync:${address}`)
+  const { didExists: connectedAccountHasDid, isLoading: connectedAccountHasDidLoading, refetch: refetchConnectedAccountHasDid } = useDidExists(`did:dgen:zksync:${address}`);
 
-  let defaultDid = `did:dgen:zksync:${address}`
-  if (!isConnected) {
-    defaultDid = ""
-  }
+  let defaultDid = isConnected ? `did:dgen:zksync:${address}` : "";
   const queryParams = new URLSearchParams(window.location.search);
   const queryDid = queryParams.get('q');
   if (queryDid) {
@@ -56,10 +51,11 @@ function Main() {
 
   const [did, setDid] = useState<string>(defaultDid);
 
-  // when initially connecting the app or switching accounts, update the current did
   useEffect(() => {
-    setDid(`did:dgen:zksync:${address}`);
-  }, [address]);
+    if (isConnected) {
+      setDid(`did:dgen:zksync:${address}`);
+    }
+  }, [address, isConnected]);
 
   const [writeAccess, setWriteAccess] = useState<boolean>(false);
   const [didFound, setDidFound] = useState<boolean>(false);
@@ -71,36 +67,25 @@ function Main() {
   const { didName, isLoading: isDidNameLoading, error: didNameError, refetch: refetchDidName } = useDidName(did);
   const { linkedAccounts, isLoading: isLinkedAccountsLoading, error: linkedAccountsError, refetch: refetchLinkedAccounts } = useDidLinkedAccounts(did);
 
-  const onDidChange = (did: string) => {
-    setDid(did);
+  const onDidChange = (newDid: string) => {
+    console.log({newDid});
+    setDid(newDid);
     refetchDidKeys();
     refetchServiceAccounts();
     refetchDidName();
     refetchLinkedAccounts();
   };
 
-  // check if current address is in the list of did keys
   useEffect(() => {
-    if (!didKeys) {
-      setDidFound(false);
-      setWriteAccess(false);
-      return;
-    }
-    if (didKeys.length > 0) {
-      const hasWriteAccess = didKeys?.find((k) => k.publicKey === address?.toLowerCase() && k.keyUsage === '0xb9208574d39bc6b85a528191d39d983f3a0bc58ef7129343fde819f64f7268cd') !== undefined
-      setWriteAccess(hasWriteAccess)
-      setDidFound(true);
-    } else {
-      setDidFound(false);
-      setWriteAccess(false);
-    }
-  }, [didKeys]);
-
-  console.log(`write access: ${writeAccess}`, { didKeys, address });
+    console.log({didKeys})
+    const hasWriteAccess = didKeys?.some((k) => k.publicKey === address?.toLowerCase() && k.keyUsages.includes('0xb9208574d39bc6b85a528191d39d983f3a0bc58ef7129343fde819f64f7268cd'));
+    setWriteAccess(!!hasWriteAccess);
+    setDidFound(!!didKeys?.length);
+  }, [didKeys, address]);
 
   return (
     <Box>
-      <DidSelector did={did} onDidChange={setDid} />
+      <DidSelector did={did} onDidChange={onDidChange} />
       <Flex
         direction={{ base: "row" }}
         wrap="wrap"
@@ -109,13 +94,13 @@ function Main() {
         h="100%"
       >
         <Box w="90%" p="4">
-          {didFound && <Heading as="h2" size="xl" textAlign={"center"}>
-            {did}
-          </Heading>}
-          {isConnected && !connectedAccountHasDidLoading && !connectedAccountHasDid && <RegisterDidCard onSuccess={() => {
-            refetchDidKeys();
-            refetchConnectedAccountHasDid();
-          }} />}
+          {didFound && <Heading as="h2" size="xl" textAlign={"center"}>{did}</Heading>}
+          {isConnected && !connectedAccountHasDidLoading && !connectedAccountHasDid && (
+            <RegisterDidCard onSuccess={() => {
+              refetchDidKeys();
+              refetchConnectedAccountHasDid();
+            }} />
+          )}
         </Box>
         <CardBox>
           <DgenName
@@ -160,7 +145,6 @@ function Main() {
             onRemoveLinkedAccount={refetchLinkedAccounts}
           />
         </CardBox>
-
         <ConnectedOnly>
           <CardBox>
             <ConnectedCard />
@@ -169,11 +153,17 @@ function Main() {
       </Flex>
       <Footer />
     </Box>
-  )
+  );
 }
 
 function CardBox({ children }: { children: React.ReactNode }) {
-  return <Box w="90%" p="4"><PeekingPepe>{children}</PeekingPepe></Box>
+  return (
+  <Box w="90%" p="4">
+    <PeekingPepe peekDuration={2000} averagePeekInterval={120000} standardDeviation={20000}>
+      {children}
+    </PeekingPepe>
+  
+  </Box>);
 }
 
 interface ConnectedOnlyProps {
@@ -196,7 +186,6 @@ interface DidSelectorProps {
 }
 
 function DidSelector({ did, onDidChange }: DidSelectorProps) {
-
   const [value, setValue] = useState<string>(did);
 
   const removeDidPrefix = (did: string) => did.replace(/^did:de?gen:zksync:/, "");
@@ -222,32 +211,36 @@ function DidSelector({ did, onDidChange }: DidSelectorProps) {
     args: [removeDidPrefix(value) as `0x${string}`],
   });
 
-  if (didByName) {
-    onDidChange(`did:dgen:zksync:${didByName}`);
-  }
-
-  if (didByAccount) {
-    onDidChange(`did:dgen:zksync:${didByAccount}`);
-  }
-
-  if (didByLookup) {
-    if (value.startsWith("did:")) {
+  useEffect(() => {
+    if (didByName && didByName !== '0x0000000000000000000000000000000000000000') {
+      console.log("DID found by name:", didByName);
+      onDidChange(`did:dgen:zksync:${didByName}`);
+    } else if (didByAccount) {
+      console.log("DID found by account:", didByAccount);
+      onDidChange(`did:dgen:zksync:${didByAccount}`);
+    } else if (didByLookup && value.startsWith("did:")) {
+      console.log("DID found by lookup and starts with 'did:'", value);
       onDidChange(value);
-    } else {
+    } else if (didByLookup) {
+      console.log("DID found by lookup:", value);
       onDidChange(`did:dgen:zksync:${value}`);
     }
-  }
+  }, [didByName, didByAccount, didByLookup, value, onDidChange]);
 
   return (
     <Flex justifyContent="center" alignItems="center">
       <Box w="80%" p="4">
         <Heading mb="4" fontSize="large">Search by DID, name or linked account</Heading>
-        <Input value={value} fontSize={"2xl"} onChange={(e) => {
-          setValue(e.target.value);
-          refetchDidByName();
-          refetchDidByAccount();
-          refetchDidByLookup();
-        }} />
+        <Input 
+          value={value} 
+          fontSize={"2xl"} 
+          onChange={(e) => {
+            setValue(e.target.value);
+            refetchDidByName();
+            refetchDidByAccount();
+            refetchDidByLookup();
+          }} 
+        />
       </Box>
     </Flex>
   );

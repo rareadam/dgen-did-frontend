@@ -1,5 +1,6 @@
 import { useReadContract } from 'wagmi';
-import { DidKeyRegistryAbi, DidKeyRegistryAddress } from '../contracts';
+import { DidKeyRegistryAddress } from '../contracts/addresses';
+import { DidKeyRegistryAbi } from '../contracts/abis';
 
 const useDidExists = (did: string) => {
   const didAddress = did.replace(/^did:de?gen:zksync:/, "") as `0x${string}`;

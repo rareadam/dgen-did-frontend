@@ -38,7 +38,14 @@ const DidKeys: React.FC<DidKeyProps> = ({ did, hasWriteAccess, didKeys, isLoadin
                                     <Tr key={index}>
                                         <Td fontSize="md">{key.id}</Td>
                                         <Td fontSize="md"><LongString text={key.publicKey} maxLength={20} /></Td>
-                                        <Td fontSize="md"><LongString text={key.keyUsage} maxLength={20} /></Td>
+                                        <Td fontSize="md">
+                                            {key.keyUsages.map((usage, index) => (
+                                                <React.Fragment key={index}>
+                                                    {index > 0 && ', '}
+                                                    <LongString text={usage} maxLength={20} />
+                                                </React.Fragment>
+                                            ))}
+                                        </Td>
                                         <Td fontSize="md">{key.keyType}</Td>
                                         {hasWriteAccess && <Td fontSize="md" textAlign="right"><RevokeKeyButton did={did} keyId={key.id} onRemoveKey={onRevokeKey} /></Td>}
                                     </Tr>
@@ -66,8 +73,16 @@ const DidKeysMobile: React.FC<DidKeyProps> = ({ did, hasWriteAccess, didKeys, is
                     {didKeys.map((key, index) => (
                         <Box key={index} p="4" borderWidth="1px" borderRadius="lg" width="full">
                             <Text fontSize="md"><b>Key ID:</b> {key.id}</Text>
-                            <Text fontSize="md"><b>Public Key:</b> <LongString text={key.publicKey} maxLength={20} /></Text>
-                            <Text fontSize="md"><b>Key Usage:</b> <LongString text={key.keyUsage} maxLength={20} /></Text>
+                            <Text as="div" fontSize="md"><b>Public Key:</b> <LongString text={key.publicKey} maxLength={20} /></Text>
+                            <Text fontSize="md">
+                                <b>Key Usage:</b> 
+                                {key.keyUsages.map((usage, index) => (
+                                    <React.Fragment key={index}>
+                                        {index > 0 && ', '}
+                                        <LongString text={usage} maxLength={20} />
+                                    </React.Fragment>
+                                ))}
+                            </Text>
                             <Text fontSize="md"><b>Key Type:</b> {key.keyType}</Text>
                             {hasWriteAccess && <Box textAlign="right"><RevokeKeyButton did={did} keyId={key.id} onRemoveKey={onRevokeKey} /></Box>}
                         </Box>
@@ -82,6 +97,7 @@ const DidKeysMobile: React.FC<DidKeyProps> = ({ did, hasWriteAccess, didKeys, is
 };
 
 import { useBreakpointValue } from '@chakra-ui/react';
+import React from "react";
 
 const DidKeysResponsive: React.FC<DidKeyProps> = (props) => {
     const isLargeScreen = useBreakpointValue({ base: false, lg: true });

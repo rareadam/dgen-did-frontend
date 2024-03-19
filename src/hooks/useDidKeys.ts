@@ -4,7 +4,7 @@ import { DidKeyRegistryAbi, DidKeyRegistryAddress } from '../contracts';
 interface DidKey {
   id: string;
   keyType: number;
-  keyUsage: string;
+  keyUsages: readonly `0x${string}`[];
   publicKey: string;
 }
 

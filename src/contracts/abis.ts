@@ -391,9 +391,9 @@ export const DidKeyRegistryAbi = [
       },
       {
         "indexed": false,
-        "internalType": "bytes32",
-        "name": "keyUsage",
-        "type": "bytes32"
+        "internalType": "bytes32[]",
+        "name": "keyUsages",
+        "type": "bytes32[]"
       },
       {
         "indexed": false,
@@ -422,6 +422,81 @@ export const DidKeyRegistryAbi = [
       }
     ],
     "name": "DidKeyRevoked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "did",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isSudo",
+        "type": "bool"
+      }
+    ],
+    "name": "DidKeySudoChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "did",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "keyUsage",
+        "type": "bytes32"
+      }
+    ],
+    "name": "DidKeyUsageAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "did",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "keyUsage",
+        "type": "bytes32"
+      }
+    ],
+    "name": "DidKeyUsageRemoved",
     "type": "event"
   },
   {
@@ -496,14 +571,19 @@ export const DidKeyRegistryAbi = [
             "type": "uint8"
           },
           {
-            "internalType": "bytes32",
-            "name": "keyUsage",
-            "type": "bytes32"
+            "internalType": "bytes32[]",
+            "name": "keyUsages",
+            "type": "bytes32[]"
           },
           {
             "internalType": "bytes",
             "name": "publicKey",
             "type": "bytes"
+          },
+          {
+            "internalType": "bool",
+            "name": "sudo",
+            "type": "bool"
           }
         ],
         "internalType": "struct Key",
@@ -512,6 +592,29 @@ export const DidKeyRegistryAbi = [
       }
     ],
     "name": "addKey",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "did",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "keyUsage",
+        "type": "bytes32"
+      }
+    ],
+    "name": "addKeyUsage",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -622,14 +725,14 @@ export const DidKeyRegistryAbi = [
         "type": "uint8"
       },
       {
-        "internalType": "bytes32",
-        "name": "keyUsage",
-        "type": "bytes32"
-      },
-      {
         "internalType": "bytes",
         "name": "publicKey",
         "type": "bytes"
+      },
+      {
+        "internalType": "bool",
+        "name": "sudo",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -658,14 +761,19 @@ export const DidKeyRegistryAbi = [
             "type": "uint8"
           },
           {
-            "internalType": "bytes32",
-            "name": "keyUsage",
-            "type": "bytes32"
+            "internalType": "bytes32[]",
+            "name": "keyUsages",
+            "type": "bytes32[]"
           },
           {
             "internalType": "bytes",
             "name": "publicKey",
             "type": "bytes"
+          },
+          {
+            "internalType": "bool",
+            "name": "sudo",
+            "type": "bool"
           }
         ],
         "internalType": "struct Key[]",
@@ -709,14 +817,19 @@ export const DidKeyRegistryAbi = [
             "type": "uint8"
           },
           {
-            "internalType": "bytes32",
-            "name": "keyUsage",
-            "type": "bytes32"
+            "internalType": "bytes32[]",
+            "name": "keyUsages",
+            "type": "bytes32[]"
           },
           {
             "internalType": "bytes",
             "name": "publicKey",
             "type": "bytes"
+          },
+          {
+            "internalType": "bool",
+            "name": "sudo",
+            "type": "bool"
           }
         ],
         "internalType": "struct Key[]",
@@ -753,9 +866,55 @@ export const DidKeyRegistryAbi = [
         "internalType": "string",
         "name": "id",
         "type": "string"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "keyUsage",
+        "type": "bytes32"
+      }
+    ],
+    "name": "removeKeyUsage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "did",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "id",
+        "type": "string"
       }
     ],
     "name": "revokeKey",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "did",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "internalType": "bool",
+        "name": "isSudo",
+        "type": "bool"
+      }
+    ],
+    "name": "setSudoKey",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

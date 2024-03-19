@@ -11,6 +11,7 @@ const config: ThemeConfig = {
 
 // 3. Customize the theme colors for light mode
 const customTheme = {
+  
   styles: {
     global: (props: any) => ({
       body: {

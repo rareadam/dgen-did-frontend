@@ -28,7 +28,6 @@ const AllowanceButton: React.FC<AllowanceButtonProps> = ({ requiredAllowance, ch
 
     const toast = useToast();
     const [allowance, setAllowance] = useState<bigint>(BigInt(0));
-    const [isLoading, setIsLoading] = useState(false);
 
     const { data: allowanceData, refetch } = useReadContract({
         address: DgenTokenAddress,
@@ -49,11 +48,36 @@ const AllowanceButton: React.FC<AllowanceButtonProps> = ({ requiredAllowance, ch
         checkAllowance();
     }, [address]);
 
-    const { writeContract, data: hash, isError, error, isSuccess } = useWriteContract();
+    const { writeContract, data: hash, isError, error, isSuccess, isPending } = useWriteContract();
     const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash });
 
-    const handleAddAllowance = async () => {
-        setIsLoading(true);
+    useEffect(() => {
+        if (isError && error) {
+            toast({
+                title: 'Failed to Add Allowance',
+                description: error instanceof Error ? error.message : "An error occurred",
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    }, [isError, error]);
+
+    useEffect(() => {
+        if (isSuccess && !isConfirming) {
+            toast({
+                title: 'Allowance Added',
+                description: "You have successfully added the allowance.",
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            });
+            setAllowance(requiredAllowance);
+        }
+    }, [isSuccess, isConfirming]);
+
+    const handleAddAllowance = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
         writeContract({
             account: address,
             address: DgenTokenAddress,
@@ -70,37 +94,10 @@ const AllowanceButton: React.FC<AllowanceButtonProps> = ({ requiredAllowance, ch
         });
     };
 
-    if (isError) {
-        if (isLoading) {
-            setIsLoading(false);
-            toast({
-                title: 'Failed to Add Allowance',
-                description: error instanceof Error ? error.message : "An error occurred",
-                status: 'error',
-                duration: 9000,
-                isClosable: true,
-            });
-        }
-    }
-
-    if (isSuccess) {
-        if (isLoading) {
-            toast({
-                title: 'Allowance Added',
-                description: "You have successfully added the allowance.",
-                status: 'success',
-                duration: 9000,
-                isClosable: true,
-            });
-            setAllowance(requiredAllowance);
-            setIsLoading(false);
-        }
-    }
-
     if (allowance < requiredAllowance) {
         return (
             <Tooltip label="Click to add allowance" hasArrow placement="top">
-                <Button onClick={handleAddAllowance} isLoading={isLoading} colorScheme="blue" {...props}>
+                <Button onClick={handleAddAllowance} isLoading={isPending || isConfirming} colorScheme="blue" {...props}>
                     Add Allowance
                 </Button>
             </Tooltip>
