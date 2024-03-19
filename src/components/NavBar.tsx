@@ -100,10 +100,8 @@ const MenuLinks: FC<MenuLinksProps> = ({ isOpen }) => {
         direction={["column", "row", "row", "row"]}
         pt={[4, 4, 0, 0]}
       >
-        <MenuItem to="/">Home</MenuItem>
-        <MenuItem to="/how">How It works </MenuItem>
-        <MenuItem to="/features">Developers </MenuItem>
-        <MenuItem to="/pricing">Ecosystem </MenuItem>
+        {/* <MenuItem to="/">dApp</MenuItem>
+        <MenuItem to="/docs">docs </MenuItem> */}
         <MenuItem as="div">
           <ConnectKitButton mode={colorMode} />
         </MenuItem>

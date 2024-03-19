@@ -82,7 +82,7 @@ function Main() {
   }, [didKeys, address]);
 
   return (
-    <Box mt="-40px">
+    <Box >
       <DidSelector did={did} onDidChange={onDidChange} />
       <Flex
         direction={{ base: "row" }}
