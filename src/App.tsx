@@ -60,8 +60,6 @@ function Main() {
   const [writeAccess, setWriteAccess] = useState<boolean>(false);
   const [didFound, setDidFound] = useState<boolean>(false);
 
-  const didAddress = did.replace(/^did:de?gen:zksync:/, "") as `0x${string}`;
-
   const { didKeys, isLoading: isDidKeysLoading, error: didKeysError, refetch: refetchDidKeys } = useDidKeys(did);
   const { serviceAccounts, isLoading: isServiceAccountsLoading, error: serviceAccountsError, refetch: refetchServiceAccounts } = useDidServiceAccounts(did);
   const { didName, isLoading: isDidNameLoading, error: didNameError, refetch: refetchDidName } = useDidName(did);
@@ -70,10 +68,10 @@ function Main() {
   const onDidChange = (newDid: string) => {
     console.log({newDid});
     setDid(newDid);
-    refetchDidKeys();
-    refetchServiceAccounts();
-    refetchDidName();
-    refetchLinkedAccounts();
+    if (newDid === '0x0000000000000000000000000000000000000000') {
+      setDidFound(false);
+      return;
+    }
   };
 
   useEffect(() => {
@@ -224,6 +222,8 @@ function DidSelector({ did, onDidChange }: DidSelectorProps) {
     } else if (didByLookup) {
       console.log("DID found by lookup:", value);
       onDidChange(`did:dgen:zksync:${value}`);
+    } else {
+      onDidChange('0x0000000000000000000000000000000000000000');
     }
   }, [didByName, didByAccount, didByLookup, value, onDidChange]);
 
