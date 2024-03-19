@@ -82,7 +82,7 @@ function Main() {
   }, [didKeys, address]);
 
   return (
-    <Box>
+    <Box mt="-40px">
       <DidSelector did={did} onDidChange={onDidChange} />
       <Flex
         direction={{ base: "row" }}
@@ -232,8 +232,11 @@ function DidSelector({ did, onDidChange }: DidSelectorProps) {
       <Box w="80%" p="4">
         <Heading mb="4" fontSize="large">Search by DID, name or linked account</Heading>
         <Input 
-          value={value} 
-          fontSize={"2xl"} 
+          value={value}
+          size="lg"
+          fontSize={"3xl"}
+          border="2px" // Makes the border of the input thick
+          placeholder="Enter DID, name, or account"
           onChange={(e) => {
             setValue(e.target.value);
             refetchDidByName();
